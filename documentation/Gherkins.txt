@@ -1,0 +1,162 @@
+MVPNotes
+
+Feature - 
+As a user i want to be able to create a new note, edit the note with text, images and files.
+
+---------------------------------------------------------------------------
+
+Scenario -
+Succesfully create a new note.
+
+Given - 
+Currently on mainpage.
+That the input field is not empty.
+
+When - 
+Note has been writen in the input field.
+And Add button is pressed
+And Date has been generates for the written note.
+
+Then - 
+The note should be displayed in the list of notess
+And the note should be listed according to time and date in falling order
+
+---------------------------------------------------------------------------
+
+Scenario -
+Succesfully delete an existing note.
+
+Given - 
+User is on edit note page.
+
+When - 
+Delete note button is pressed.
+
+Then - 
+Confirmation alert is accepted.
+All text and files are deleted from the note.
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Alert should be displayed when user tries to add empty note
+
+Given -
+User is on mainpage
+Input field is empty 
+Or date is not selected
+
+When - 
+User presses on Add button
+
+Then - 
+Alert message should pop up alerting the user of the missing information
+And input field should be marked in red if information is missing
+And time and date selector should be marked in red if time and date has not been selected
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Mark an note as done
+
+Given - 
+User is on mainpage
+
+When - 
+note is selected
+And Done button is checked
+
+Then - 
+notes will now be displayed with a line over it, marking it as done
+And the note should be tinted in a lighter color
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Go to specific notes edit page.
+
+Given - 
+There is atleast 1 note in the list
+
+When - 
+note is selected
+Edit button is pressed
+
+Then - 
+Text input is visible and editable
+Add image button is visible
+Add file button is visible
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Edit a notes text.
+
+Given - 
+User is on the edit notes page
+
+When - 
+Text is writen in the input field.
+
+Then - 
+Save button is pressed to update note.
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Add images to the note.
+
+Given - 
+User is on the edit notes page
+
+When - 
+Add image button is pressed.
+
+Then - 
+Selected image/images uploads from selected path.
+Save button is pressed.
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Remove image/images from notes.
+
+Given - 
+User is on the edit notes page
+
+When - 
+Image delete button is pressed.
+
+Then - 
+Image deleted is removed from note.
+Save button is pressed.
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Add files to the note.
+
+Given - 
+User is on the edit notes page
+
+When - 
+Add file button is pressed.
+
+Then - 
+Selected file/files uploads from selected path.
+Save button is pressed.
+
+---------------------------------------------------------------------------
+
+Scenario - 
+Remove file/files from notes.
+
+Given - 
+User is on the edit notes page
+
+When - 
+file delete button is pressed.
+
+Then - 
+file deleted is removed from note.
+Save button is pressed.
