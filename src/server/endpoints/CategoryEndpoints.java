@@ -2,6 +2,9 @@ package server.endpoints;
 
 import express.Express;
 import server.database.Database;
+import server.model.Category;
+
+import java.util.List;
 
 public class CategoryEndpoints {
 
@@ -12,7 +15,11 @@ public class CategoryEndpoints {
 
     private void categoryEndpoints(Database dbConnection, Express app){
 
-        // Ex. app.get() methods
+        app.get("/rest/categories", (((request, response) -> {
+
+            List<Category> categories = dbConnection.getCategoriesConnection().getCategories();
+            response.json(categories);
+        })));
 
     }
 }

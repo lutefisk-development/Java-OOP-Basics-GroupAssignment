@@ -2,6 +2,9 @@ package server.endpoints;
 
 import express.Express;
 import server.database.Database;
+import server.model.Path;
+
+import java.util.List;
 
 public class PathEndpoints {
 
@@ -12,7 +15,11 @@ public class PathEndpoints {
 
     private void pathEndpoints(Database dbConnection, Express app){
 
-        // Ex. app.get() methods
+        app.get("/rest/paths",(((request, response) -> {
+
+            List<Path> paths = dbConnection.getPathsConnection().getPaths();
+            response.json(paths);
+        })));
 
     }
 }
