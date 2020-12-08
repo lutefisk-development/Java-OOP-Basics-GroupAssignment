@@ -2,6 +2,9 @@ package server.endpoints;
 
 import express.Express;
 import server.database.Database;
+import server.model.Note;
+
+import java.util.List;
 
 public class NoteEndpoints {
 
@@ -13,8 +16,11 @@ public class NoteEndpoints {
 
     private void noteEndpoints(Database dbConnection, Express app){
 
-        // Ex. app.get() methods
+        app.get("/rest/notes", ((request, response) -> {
 
+            List<Note> notes = dbConnection.getNotesConnection().getNotes();
+            response.json(notes);
+        }));
 
     }
 }
