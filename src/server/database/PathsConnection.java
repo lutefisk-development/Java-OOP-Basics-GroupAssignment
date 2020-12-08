@@ -7,7 +7,6 @@ public class PathsConnection {
     private Connection dbConnection;
 
     public PathsConnection(Connection dbConnection) {
-
         this.dbConnection = dbConnection;
     }
 }
