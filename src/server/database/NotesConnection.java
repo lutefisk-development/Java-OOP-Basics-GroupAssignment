@@ -40,7 +40,7 @@ public class NotesConnection {
 
     public Note getNoteById(int id){
         Note note = null;
-        String query = "SELECT * FROM todos WHERE id = ?";
+        String query = "SELECT * FROM notes WHERE id = ?";
 
         try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
@@ -61,4 +61,18 @@ public class NotesConnection {
         return note;
     }
 
+    public void deleteNoteById(int id){
+        String query = "DELETE FROM notes WHERE id = ?";
+
+        try {
+            PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+
+        }
+    }
 }
