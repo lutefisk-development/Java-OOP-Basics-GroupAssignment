@@ -37,4 +37,21 @@ public class PathsConnection {
 
         return paths;
     }
+
+    public void createPath(Path path){
+
+        String query = "INSERT INTO paths (path, fileType, noteId) VALUES(?,?,?)";
+
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setString(1, path.getPath());
+            statement.setString(2, path.getFileType());
+            statement.setInt(3,path.getNoteId());
+            statement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 }
