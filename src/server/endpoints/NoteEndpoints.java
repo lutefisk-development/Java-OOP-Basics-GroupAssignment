@@ -22,5 +22,19 @@ public class NoteEndpoints {
             response.json(notes);
         }));
 
+        app.get("/rest/notes/:id", (req, res) -> {
+            try {
+                int id = Integer.parseInt(req.getParam("id"));
+                Note note = dbConnection.getNotesConnection().getNoteById(id);
+
+                res.json(note);
+
+            } catch (NumberFormatException exception) {
+                exception.printStackTrace();
+            }
+
+
+        });
+
     }
 }

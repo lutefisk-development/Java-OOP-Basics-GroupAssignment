@@ -38,4 +38,27 @@ public class NotesConnection {
         return notes;
     }
 
+    public Note getNoteById(int id){
+        Note note = null;
+        String query = "SELECT * FROM todos WHERE id = ?";
+
+        try {
+            PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            Note[] noteFromRS = (Note[]) Utils.readResultSetToObject(resultSet, Note[].class);
+
+            note = noteFromRS[0];
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return note;
+    }
+
 }
