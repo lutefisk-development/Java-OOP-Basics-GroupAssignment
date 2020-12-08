@@ -1,4 +1,4 @@
-package server.Model;
+package server.model;
 
 public class Category {
 
