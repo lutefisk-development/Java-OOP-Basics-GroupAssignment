@@ -1,0 +1,92 @@
+/* Google font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital@1&display=swap');
+
+/* Page reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background-color: rgb(237, 235, 235);
+}
+
+.container {
+  width: 80vw;
+  margin: 0 auto;
+}
+
+/* FRONT PAGE */
+header {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+header h1 {
+  font-size: 2.3rem;
+  align-self: center;
+}
+
+header .add-note {
+  background-color: #fff;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+section#all-notes {
+  display: flex;
+  justify-content: space-between;
+}
+
+section#all-notes article {
+  background-color: #fff;
+  padding: 1.5rem;
+  width: 30%;
+  border: 1px solid black;
+}
+
+section#all-notes .article-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+section#all-notes h1,
+section#all-notes p {
+  margin-bottom: 1rem;
+}
+
+section#all-notes .dates {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+section#all-notes .dates p {
+  margin: 0;
+}
+
+section#all-notes .files-checked {
+  display: flex;
+}
+
+section#all-notes .files-checked .far {
+  margin-left: .5rem;
+}
+
+section#all-notes .files-checked .fa-check-square {
+  margin-left: auto;
+}
+
+section#all-notes article.note-checked {
+  background-color: rgb(193, 225, 193);
+}
+/* /FRONT PAGE */
