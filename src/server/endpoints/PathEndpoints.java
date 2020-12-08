@@ -21,5 +21,12 @@ public class PathEndpoints {
             response.json(paths);
         })));
 
+        app.post("/rest/paths", (((request, response) -> {
+            Path path = (Path)request.getBody(Path.class);
+            dbConnection.getPathsConnection().createPath(path);
+            response.send("Post went ok.");
+        })));
+
+
     }
 }
