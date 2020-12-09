@@ -43,5 +43,11 @@ public class NoteEndpoints {
 
         });
 
+        app.put("/rest/notes/:id", (req, res) -> {
+            Note note = (Note) req.getBody(Note.class);
+            dbConnection.getNotesConnection().updateNote(note);
+
+        });
+
     }
 }
