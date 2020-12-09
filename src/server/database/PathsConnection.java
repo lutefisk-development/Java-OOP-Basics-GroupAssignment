@@ -54,4 +54,51 @@ public class PathsConnection {
         }
     }
 
+    public boolean deletePath(Path path){
+
+        if(!pathIdExists(path)){
+            System.out.println("A path with this id doesn't exist in the db.");
+            return false;
+        }
+
+        String query = "DELETE FROM paths WHERE id = ?";
+
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setInt(1,path.getId());
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return true;
+    }
+
+    // Needed this method before delete a path, to se if it exists in db
+    public Path getPathById(int id){
+
+        Path path = null;
+        String query = "SELECT * FROM paths WHERE id = ?";
+
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setInt(1,id);
+            ResultSet resultSet = statement.executeQuery();
+
+            Path [] resultSetArray = (Path[]) Utils.readResultSetToObject(resultSet, Path[].class);
+            path = resultSetArray[0];
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return path;
+    }
+
+    public boolean pathIdExists(Path path){
+        return getPathById(path.getId()) != null;
+    }
+
 }
