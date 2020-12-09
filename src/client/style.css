@@ -114,14 +114,21 @@ header .add-note {
 
 section#all-notes {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
 section#all-notes article {
   background-color: #fff;
+  margin-bottom: 3rem;
   padding: 1.5rem;
   width: 30%;
   border: 1px solid black;
+  transition: 300ms ease-in-out;
+}
+
+section#all-notes article:hover {
+  transform: scale(1.1);
 }
 
 section#all-notes .article-header {
