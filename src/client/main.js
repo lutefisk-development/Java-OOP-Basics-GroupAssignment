@@ -65,3 +65,19 @@
 
 
 })(jQuery);
+
+
+// la till en get all notes function för att spara i en array for att delete ska funka, kan ha fel!
+let notes = [];
+
+async function getAllNotes(){
+  let result = await fetch("/rest/notes");
+  notes = await result.json();
+}
+
+async function deleteNoteById(note){
+  let result = await fetch("/rest/notes/id", {
+    method: "DELETE",
+    BODY: JSON.stringify(note)
+  });
+}
