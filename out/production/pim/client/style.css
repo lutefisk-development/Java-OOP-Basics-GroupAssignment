@@ -114,11 +114,13 @@ header .add-note {
 
 section#all-notes {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
 section#all-notes article {
   background-color: #fff;
+  margin-bottom: 3rem;
   padding: 1.5rem;
   width: 30%;
   border: 1px solid black;
