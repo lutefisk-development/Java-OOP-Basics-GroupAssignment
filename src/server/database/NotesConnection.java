@@ -78,9 +78,10 @@ public class NotesConnection {
     }
 
     public void updateNote(Note note) {
-        try {
-            String query = "UPDATE notes SET title = ?, SET text = ?, SET categoryId = ?, SET checked = ?, SET creationDate = ?, SET finishDate = ? WHERE id = ?";
 
+            String query = "UPDATE notes SET title = ?, text = ?, categoryId = ?, checked = ?, creationDate = ?, finishDate = ? WHERE id = ?";
+
+        try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
             preparedStatement.setString(1, note.getTitle());
             preparedStatement.setString(2, note.getText());
