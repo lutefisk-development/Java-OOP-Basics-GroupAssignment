@@ -35,6 +35,7 @@ nav.side-navbar .navbar-wrapper {
   justify-content: flex-start;
   opacity: 0;
   transition: opacity 150ms ease-in-out;
+  transition: opacity 150ms ease-in-out
 }
 
 nav.side-navbar .navbar-wrapper.open {
@@ -53,7 +54,11 @@ nav.side-navbar .navbar-wrapper h2 {
 }
 
 nav.side-navbar .filter-wrapper {
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
+}
+
+nav.side-navbar .navbar-wrapper h2 {
+  margin-bottom: 1rem;
 }
 
 nav.side-navbar .navbar-wrapper ul {
