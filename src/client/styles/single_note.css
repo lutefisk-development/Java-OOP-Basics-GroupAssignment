@@ -1,0 +1,127 @@
+#single-note-container {
+  margin-bottom: 2rem;
+}
+
+#single-note-container header {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#single-note-container header a {
+  margin-right: 1rem;
+  color: #000;
+}
+
+#single-note-container header a:hover {
+  color: rgb(0, 26, 255);
+}
+
+#single-note-container header h1 {
+  padding-top: .2em;
+  font-size: 2.8rem;
+}
+
+section#single-note {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 5px;
+  -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+}
+
+section#single-note .section-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+section#single-note .section-header .dates {
+  display: flex;
+}
+
+section#single-note .dates .created-date {
+  margin-right: 1.5rem;
+}
+
+section#single-note .section-header .edit-delete {
+  display: flex;
+}
+
+section#single-note .section-header .edit-delete i:hover {
+  color: rgb(0, 26, 255);
+}
+
+section#single-note .section-header .edit-delete .fa-trash-alt:hover {
+  color: rgb(255, 0, 0);
+}
+
+section#single-note .section-header .edit-delete i {
+  margin-right: .8rem;
+  cursor: pointer;
+}
+
+section#single-note .section-header .edit-delete i:last-of-type {
+  margin-right: 0;
+}
+
+section#single-note .section-body h2 {
+  font-size: 2.3rem;
+}
+
+section#single-note .section-body h2 {
+  margin-bottom: 1rem;
+}
+
+section#single-note .section-body p {
+  margin-bottom: 3rem;
+}
+
+section#single-note .section-images {
+  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(3, 33%);
+  grid-template-rows: repeat(2, 12.5rem);
+  grid-template-areas: "one two three"
+                       "four five six";
+  grid-gap: 10px;
+}
+
+section#single-note .section-images #1 { grid-area: one; }
+section#single-note .section-images #2 { grid-area: two; }
+section#single-note .section-images #3 { grid-area: three; }
+section#single-note .section-images #4 { grid-area: four; }
+section#single-note .section-images #5 { grid-area: five; }
+section#single-note .section-images #6 { grid-area: six; }
+
+section#single-note .section-images .img-wrapper img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+section#single-note .section-files {
+  margin-bottom: 2rem;
+}
+
+section#single-note .section-files .file-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+section#single-note .section-files .file-container i {
+  margin-right: 1rem;
+}
+
+section#single-note .section-files .file-container div {
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+section#single-note .section-files .file-container div:hover {
+  color: rgb(0, 26, 255);
+}
