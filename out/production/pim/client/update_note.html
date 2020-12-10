@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+
+  <!-- link to bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+  <!-- Project stylesheets -->
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/create_note.css">
+  <title>PIM</title>
+</head>
+<body>
+
+  <main class="container" id="update-note-container">
+    <header>
+      <a href="/index.html">
+        <i class="fas fa-angle-double-left fa-4x"></i>
+      </a>
+      <h1>MVPNote</h1>
+    </header>
+
+    <form id="update-note-form">
+      <div class="form-floating title-wrapper">
+        <input class="form-control" type="text" id="note-title" name="title" value="FROM DATABASE">
+        <label for="note-title">Title:</label>
+      </div>
+
+      <div class="form-floating text-wrapper">
+        <textarea class="form-control" id="note-text" name="text">FROM DATABASE</textarea>
+        <label for="note-text">Text:</label>
+      </div>
+
+      <div class="wrapper">
+        <div class="form-floating">
+          <input class="form-control" type="date" id="note-end" name="end">
+          <label for="note-end">End Date:</label>
+        </div>
+
+        <div class="form-floating">
+          <select class="form-select" id="note-category" name="category">
+            <option selected>Pick a Category</option>
+            <option value="work-should-be-id">Work</option>
+            <option value="school-should-be-id">School</option>
+            <option value="home-should-be-id">Home</option>
+          </select>
+          <label for="note-category">Category:</label>
+        </div>
+      </div>
+
+      <!-- <div class="all-files-wrapper">
+        <div class="img-wrapper">
+          <p>Images:</p>
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-one" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-two" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-three" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-four" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-five" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-img-six" name="file">
+          </div>
+        </div>
+
+        <div class="file-wrapper">
+          <p>Files:</p>
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-file-one" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-file-two" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-file-three" name="file">
+          </div>
+
+          <div class="input-group">
+            <input class="form-control" type="file" id="note-file-four" name="file">
+          </div>
+        </div>
+      </div> -->
+
+
+      <button type="submit" class="btn btn-success">Update Note</button>
+    </form>
+  </main>
+  <!--
+    FONT AWESOME ICONS USED:
+
+    SLIDER:
+    <i class="fas fa-sliders-h"></i>
+
+    EDIT:
+    <i class="far fa-edit"></i>
+
+    DELETE:
+    <i class="far fa-trash-alt"></i>
+
+    FILE:
+    <i class="far fa-file-alt"></i>
+
+    PICTURE:
+    <i class="far fa-file-image"></i>
+
+    CHECKED:
+    <i class="far fa-check-square"></i>
+
+    ADD:
+    <i class="fas fa-plus"></i>
+
+    CLOSE NAV:
+    <i class="fas fa-times"></i>
+
+    SQUARE:
+    <i class="far fa-square"></i>
+
+    HOME ICON
+    <i class="fas fa-angle-double-left"></i>
+   -->
+
+  <!-- jQuery: -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+
+  <!-- Project javascript: -->
+  <script src="/main.js"></script>
+</body>
+</html>
