@@ -195,11 +195,21 @@
 
 
 
-  async function deleteNoteById(note){
-    let result = await fetch("/rest/notes/id", {
-      method: "DELETE",
-      BODY: JSON.stringify(note)
-    });
+  async function getNote(){
+    let result = await fetch("/rest/notes/id");
+    notes = await result.json();
   }
 
+  $("#deleteNoteByIdButton").click(function() {
+    deleteNoteById();
+
+  });
+
+  async function deleteNoteById(id){
+    let result = await fetch("/rest/notes/id", {
+      method: "DELETE",
+      body: JSON.stringify(id)
+    });
+    
+  }
 })(jQuery);
