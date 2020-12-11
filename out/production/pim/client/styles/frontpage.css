@@ -130,4 +130,19 @@ section#all-notes .files-checked .fa-square {
 section#all-notes article.note-checked {
   background-color: rgb(193, 225, 193);
 }
+
+
+.checktrue {
+
+  background-color: teal;
+
+}
+
+.checkfalse {
+
+  background-color: white;
+}
+
+
+
 /* /FRONT PAGE */
