@@ -1,0 +1,71 @@
+nav.side-navbar {
+  height: 100%;
+  width: 0;
+  background-color: #fff;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow-x: hidden;
+  padding-top: 5em;
+  transition: 0.4s;
+  -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+}
+
+nav.side-navbar #close-navbar {
+  cursor: pointer;
+  padding: .5em .5em .5em 2em;
+  position: absolute;
+  top: 0;
+  right: 25px;
+  margin-left: 3.1rem;
+  transition: 0.4s;
+}
+
+nav.side-navbar #close-navbar:hover {
+  color: rgb(0, 26, 255);
+}
+
+nav.side-navbar .navbar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+
+nav.side-navbar .navbar-wrapper.open {
+  opacity: 1;
+  transition: opacity 250ms ease-in-out 250ms;
+}
+
+nav.side-navbar .navbar-wrapper h1 {
+  font-size: 2.3rem;
+  margin-bottom: 1.8rem;
+}
+
+nav.side-navbar .navbar-wrapper h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+nav.side-navbar .filter-wrapper {
+  margin-bottom: 3rem;
+}
+
+nav.side-navbar .navbar-wrapper ul {
+  list-style-type: none;
+  padding: 0;
+  margin-bottom: 1.3rem;
+}
+
+nav.side-navbar .navbar-wrapper li {
+  margin-bottom: .3rem;
+}
+
+nav.side-navbar .navbar-wrapper li:last-of-type {
+  margin-bottom: 0;
+}

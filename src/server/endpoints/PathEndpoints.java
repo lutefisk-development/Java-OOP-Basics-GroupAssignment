@@ -27,6 +27,16 @@ public class PathEndpoints {
             response.send("Post went ok.");
         })));
 
+        app.delete("/rest/paths/:id", (((request, response) -> {
+
+            Path path = (Path) request.getBody(Path.class);
+            boolean ok = dbConnection.getPathsConnection().deletePath(path);
+
+            if (ok){
+                response.send("Delete went ok.");
+            }
+        })));
+
 
     }
 }

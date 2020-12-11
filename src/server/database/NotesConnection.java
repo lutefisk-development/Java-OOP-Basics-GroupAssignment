@@ -74,5 +74,27 @@ public class NotesConnection {
             throwables.printStackTrace();
 
         }
+
+    }
+
+    public void updateNote(Note note) {
+
+            String query = "UPDATE notes SET title = ?, text = ?, categoryId = ?, checked = ?, creationDate = ?, finishDate = ? WHERE id = ?";
+
+        try {
+            PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
+            preparedStatement.setString(1, note.getTitle());
+            preparedStatement.setString(2, note.getText());
+            preparedStatement.setInt(3, note.getCategoryId());
+            preparedStatement.setBoolean(4, note.isChecked());
+            preparedStatement.setString(5, note.getCreationDate());
+            preparedStatement.setString(6, note.getFinishDate());
+            preparedStatement.setInt(7, note.getId());
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 }
