@@ -34,7 +34,10 @@ nav.side-navbar .navbar-wrapper {
   align-items: center;
   justify-content: flex-start;
   opacity: 0;
+<<<<<<< HEAD
+=======
   transition: opacity 150ms ease-in-out;
+>>>>>>> dev
   transition: opacity 150ms ease-in-out
 }
 
@@ -45,6 +48,8 @@ nav.side-navbar .navbar-wrapper.open {
 
 nav.side-navbar .navbar-wrapper h1 {
   font-size: 2.3rem;
+<<<<<<< HEAD
+=======
   margin-bottom: 1.8rem;
 }
 
@@ -54,6 +59,7 @@ nav.side-navbar .navbar-wrapper h2 {
 }
 
 nav.side-navbar .filter-wrapper {
+>>>>>>> dev
   margin-bottom: 1rem;
 }
 
