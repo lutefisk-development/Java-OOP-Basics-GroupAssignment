@@ -1,0 +1,123 @@
+#create-note-container,
+#update-note-container {
+  margin-bottom: 2rem;
+}
+
+#create-note-container header,
+#update-note-container header {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#create-note-container header a,
+#update-note-container header a {
+  margin-right: 1rem;
+  color: #000;
+}
+
+#create-note-container header a:hover,
+#update-note-container header a:hover {
+  color: rgb(0, 26, 255);
+}
+
+#create-note-container header h1,
+#update-note-container header h1 {
+  padding-top: .2em;
+  font-size: 2.8rem;
+}
+
+#create-note-container #create-note-form,
+#update-note-container #update-note-form {
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 5px;
+  -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+}
+
+#create-note-container #create-note-form input:active,
+#create-note-container #create-note-form input:focus,
+#create-note-container #create-note-form textarea:active,
+#create-note-container #create-note-form textarea:focus,
+#create-note-container #create-note-form select:active,
+#create-note-container #create-note-form select:focus,
+#update-note-container #update-note-form input:active,
+#update-note-container #update-note-form input:focus,
+#update-note-container #update-note-form textarea:active,
+#update-note-container #update-note-form textarea:focus,
+#update-note-container #update-note-form select:active,
+#update-note-container #update-note-form select:focus {
+  outline: none !important;
+  box-shadow: none!important;
+}
+
+#create-note-container #create-note-form .title-wrapper,
+#update-note-container #update-note-form .title-wrapper {
+  width: 30vw;
+  margin-bottom: 1.5rem;
+}
+
+#create-note-container #create-note-form .text-wrapper,
+#update-note-container #update-note-form .text-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+#create-note-container #create-note-form .text-wrapper textarea,
+#update-note-container #update-note-form .text-wrapper textarea {
+  height: 20vh;
+  resize: none;
+}
+
+#create-note-container #create-note-form .wrapper,
+#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
+#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
+#update-note-container #update-note-form .wrapper,
+#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
+#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+#create-note-container #create-note-form .all-files-wrapper .file-wrapper .input-group,
+#create-note-container #create-note-form .all-files-wrapper .img-wrapper .input-group,
+#update-note-container #update-note-form .all-files-wrapper .file-wrapper .input-group,
+#update-note-container #update-note-form .all-files-wrapper .img-wrapper .input-group {
+  margin-bottom: .5rem;
+}
+
+#create-note-container #create-note-form .all-files-wrapper,
+#update-note-container #update-note-form .all-files-wrapper {
+  display: flex;
+
+}
+
+#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
+#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
+#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
+#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
+  flex-direction: column;
+}
+
+#create-note-container #create-note-form .wrapper .form-floating,
+#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
+#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
+#update-note-container #update-note-form .wrapper .form-floating,
+#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
+#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
+  margin-right: 2rem;
+  width: 20%;
+}
+
+#create-note-container #create-note-form .wrapper .form-floating:last-of-type,
+#create-note-container #create-note-form .all-files-wrapper .file-wrapper .input-group:last-of-type,
+#create-note-container #create-note-form .all-files-wrapper .img-wrapper .input-group:last-of-type,
+#update-note-container #update-note-form .wrapper .form-floating:last-of-type,
+#update-note-container #update-note-form .all-files-wrapper .file-wrapper .input-group:last-of-type,
+#update-note-container #update-note-form .all-files-wrapper .img-wrapper .input-group:last-of-type {
+  margin-right: 0;
+}

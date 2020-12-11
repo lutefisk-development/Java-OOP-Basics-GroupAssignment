@@ -34,14 +34,36 @@
   //   if (!results[2]) return '';
   //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
   // }
-  //
   // console.log(getParameterByName("note-id"));
 
 
+  // create note form:
+  $("#create-note-form").submit(function(e) {
 
+    // stop form from submitting.
+    e.preventDefault();
 
+    // getting values from form:
+    console.log($("#note-title").val());
+    console.log($("#note-text").val());
+    console.log($("#note-end").val());
+    console.log($("#note-category").val());
 
+  })
 
+  // update note form:
+  $("#update-note-form").submit(function(e) {
+
+    // stop form from submitting.
+    e.preventDefault();
+
+    // getting values from form:
+    console.log($("#note-title").val());
+    console.log($("#note-text").val());
+    console.log($("#note-end").val());
+    console.log($("#note-category").val());
+
+  })
 
 
 
@@ -89,21 +111,11 @@
     notes = await result.json();
   }
 
-  async function getNote(){
-    let result = await fetch("/rest/notes/id");
-    notes = await result.json();
-  }
-
-  $("#deleteNoteByIdButton").click(function() {
-    deleteNoteById();
-
-  });
-
-  async function deleteNoteById(id){
+  async function deleteNoteById(note){
     let result = await fetch("/rest/notes/id", {
       method: "DELETE",
-      body: JSON.stringify(id)
+      BODY: JSON.stringify(note)
     });
-    
   }
+
 })(jQuery);
