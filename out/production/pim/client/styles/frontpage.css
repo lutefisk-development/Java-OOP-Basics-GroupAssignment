@@ -1,0 +1,133 @@
+header {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+header .fa-sliders-h:hover {
+  color: rgb(0, 26, 255);
+}
+
+header #open-navbar,
+header #add-note {
+  cursor: pointer;
+}
+
+header h1 {
+  font-size: 2.8rem;
+  align-self: center;
+}
+
+header .add-note {
+  background-color: #fff;
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header .add-note .fa-plus {
+  color: #000;
+  text-decoration: none;
+}
+
+header .add-note:hover .fa-plus {
+  color: rgb(0, 26, 255);
+}
+/* /HEADER */
+
+/* FRONT PAGE */
+.container.blur {
+  filter: blur(3.5px);
+}
+
+section#all-notes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+section#all-notes article {
+  background-color: #fff;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  width: 30%;
+  -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+  border-radius: 5px;
+  transition: 300ms ease-in-out;
+}
+
+section#all-notes article:hover {
+  transform: scale(1.1);
+}
+
+section#all-notes .article-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+section#all-notes .article-header a {
+  color: #000;
+  text-decoration: none;
+}
+
+section#all-notes .article-header .fa-edit:hover,
+section#all-notes .files-checked .fa-check-square:hover,
+section#all-notes .files-checked .fa-square:hover {
+  color: rgb(0, 26, 255);
+}
+
+section#all-notes h1 {
+  font-size: 1.7rem;
+}
+
+section#all-notes h1 a {
+  color: #000;
+  text-decoration: none;
+}
+
+section#all-notes h1 a:hover {
+  color:rgb(0, 26, 255);
+}
+
+section#all-notes h1 {
+  margin-bottom: 1rem;
+}
+
+section#all-notes .dates {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+section#all-notes .dates p {
+  margin: 0;
+}
+
+section#all-notes .files-checked {
+  display: flex;
+  align-items: center;
+}
+
+section#all-notes .files-checked .far {
+  margin-left: .5rem;
+}
+
+section#all-notes .files-checked .fa-check-square,
+section#all-notes .files-checked .fa-square {
+  margin-left: auto;
+}
+
+section#all-notes article.note-checked {
+  background-color: rgb(193, 225, 193);
+}
+/* /FRONT PAGE */

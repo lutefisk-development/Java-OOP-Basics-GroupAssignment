@@ -51,9 +51,6 @@ section#single-note .section-header .edit-delete {
   display: flex;
 }
 
-<<<<<<< HEAD
-section#single-note .section-header .edit-delete i:hover {
-=======
 section#single-note .section-header .edit-delete a {
   color: #000;
   text-decoration: none;
@@ -61,7 +58,6 @@ section#single-note .section-header .edit-delete a {
 
 section#single-note .section-header .edit-delete i:hover,
 section#single-note .section-header .edit-delete a:hover {
->>>>>>> dev
   color: rgb(0, 26, 255);
 }
 
@@ -69,22 +65,11 @@ section#single-note .section-header .edit-delete .fa-trash-alt:hover {
   color: rgb(255, 0, 0);
 }
 
-<<<<<<< HEAD
-section#single-note .section-header .edit-delete i {
-=======
 section#single-note .section-header .edit-delete a {
->>>>>>> dev
   margin-right: .8rem;
   cursor: pointer;
 }
 
-<<<<<<< HEAD
-section#single-note .section-header .edit-delete i:last-of-type {
-  margin-right: 0;
-}
-
-=======
->>>>>>> dev
 section#single-note .section-body h2 {
   font-size: 2.3rem;
 }
