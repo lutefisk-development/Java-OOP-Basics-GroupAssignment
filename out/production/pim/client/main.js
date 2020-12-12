@@ -43,31 +43,9 @@
     // stop form from submitting.
     e.preventDefault();
 
-    // getting file
-    let fileArray = document.querySelector("input[type=file]").files
-    let formData = new FormData();
-
-    for(let file of fileArray) {
-      formData.append('files', file, file.name);
-    }
-
-    console.log(formData);
-
-    // let uploadResult = await fetch('/api/file-upload', {
-    //   method: 'POST',
-    //   body: formData
-    // });
-
-    // // get path
-    // let imgUrl = await uploadResult.text();
-
-    // getting values from form:
-    console.log($("#note-title").val());
-    console.log($("#note-text").val());
-    console.log($("#note-end").val());
-    console.log($("#note-category").val());
-
-  })
+    // handling the form data
+    handleFormSubmit();
+  });
 
   // update note form:
   $("#update-note-form").submit(function(e) {
@@ -75,15 +53,39 @@
     // stop form from submitting.
     e.preventDefault();
 
-    // getting values from form:
-    console.log($("#note-title").val());
-    console.log($("#note-text").val());
-    console.log($("#note-end").val());
-    console.log($("#note-category").val());
-
+    // handling the form data
+    handleFormSubmit();
   })
 
+  const handleFormSubmit = async () => {
+    // getting file
+    let $fileArray = $("#note-file").prop('files');
+    let formData = new FormData();
 
+    // adding the file to formData
+    for(let file of $fileArray) {
+      formData.append('files', file, file.name);
+    }
+
+    // sending post request to endpoint for storing the file
+    let uploadResult = await fetch('/api/file-upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    // get path
+    let fileUrl = await uploadResult.text();
+
+    console.log(fileUrl);
+
+    // await fetch('/');
+
+    // getting values from form:
+    // console.log($("#note-title").val());
+    // console.log($("#note-text").val());
+    // console.log($("#note-end").val());
+    // console.log($("#note-category").val());
+  }
 
 
 
