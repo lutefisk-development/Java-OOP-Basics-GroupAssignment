@@ -1,9 +1,12 @@
 package server.endpoints;
 
 import express.Express;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileUploadException;
 import server.database.Database;
 import server.model.Path;
 
+import java.io.IOException;
 import java.util.List;
 
 public class PathEndpoints {
@@ -15,6 +18,25 @@ public class PathEndpoints {
 
     private void pathEndpoints(Database dbConnection, Express app){
 
+        // Endpoint for creating a path based on the file in request
+        app.post("/rest/file-upload", (req,res) -> {
+            String imgUrl = null;
+
+            // get file from formData
+            try {
+                List<FileItem> files = req.getFormData("files");
+                imgUrl = dbConnection.getPathsConnection().uploadImage(files.get(0));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (FileUploadException e) {
+                e.printStackTrace();
+            }
+            
+            // return "/uploads/image-name.jpg"
+            res.send(imgUrl);
+        });
+
+        /*
         app.get("/rest/paths",(((request, response) -> {
 
             List<Path> paths = dbConnection.getPathsConnection().getPaths();
@@ -36,6 +58,7 @@ public class PathEndpoints {
                 response.send("Delete went ok.");
             }
         })));
+         */
 
 
     }
