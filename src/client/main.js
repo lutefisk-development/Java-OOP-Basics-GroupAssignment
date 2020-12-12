@@ -68,7 +68,22 @@
 
   // Getting and render the notes
   let notes = [];
+  let categories = [];
+
+  // getCategoriesFromDb();
   populateNotesList();
+
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    console.log(categories);
+
+    // populateNotesList();
+    
+  } 
+
 
   function populateNotesList(){
     getAllNotes();
@@ -82,9 +97,10 @@
     renderNotes();
   }
 
-  function renderNotes(){
+  async function renderNotes(){
 
     let allNotesElement = $("#all-notes");
+    let category = "";
 
     for (let i = 0; i < notes.length; i++) {
 
@@ -92,13 +108,36 @@
       if(notes[i].finishDate == null){
         notes[i].finishDate = "";
       }
- 
+      
+      // for (let j = 0; j < categories.length; j++) {
+        
+      //   if(notes[i].categoryId == categories[j].id){
+
+      //     category = categories[j].category;
+      //     console.log(category);
+      //   }
+
+      // }
+
+      // console.log(notes[i].categoryId);
+      category = getCategoryByIdFromDb(notes[i].categoryId);
+      console.log(category);
+
+
+
       if(notes[i].checked){
+
+        // let category = getCategoryByIdFromDb(notes[i])
+        // let categoryName = category.category;
+        // console.log(categoryName);
+
+          
+
 
         allNotesElement.append(
           '<article class = checktrue>' +
          '<div class="article-header">' +
-            '<p>' + notes[i].categoryId + '</p>' +
+            '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -130,7 +169,7 @@
         allNotesElement.append(
           '<article class = checkfalse>' +
          '<div class="article-header">' +
-            '<p>' + notes[i].categoryId + '</p>' +
+            '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -212,4 +251,19 @@
     });
     
   }
+
+
+  async function getCategoryByIdFromDb(id){
+
+    let result = await fetch("/rest/categories/" + id);
+    let category = await result.json();
+
+    console.log(category);
+    
+    return category.category
+  }
+
+
+
+
 })(jQuery);
