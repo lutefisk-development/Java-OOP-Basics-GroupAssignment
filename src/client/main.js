@@ -78,7 +78,8 @@
 
     console.log(fileUrl);
 
-    // await fetch('/');
+    // return back to frontpage
+    window.location.replace("http://localhost:1000/");
 
     // getting values from form:
     // console.log($("#note-title").val());
@@ -86,6 +87,8 @@
     // console.log($("#note-end").val());
     // console.log($("#note-category").val());
   }
+
+
   // Getting and render the notes
   let notes = [];
   populateNotesList();
