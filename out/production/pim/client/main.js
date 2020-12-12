@@ -43,6 +43,24 @@
     // stop form from submitting.
     e.preventDefault();
 
+    // getting file
+    let fileArray = document.querySelector("input[type=file]").files
+    let formData = new FormData();
+
+    for(let file of fileArray) {
+      formData.append('files', file, file.name);
+    }
+
+    console.log(formData);
+
+    // let uploadResult = await fetch('/api/file-upload', {
+    //   method: 'POST',
+    //   body: formData
+    // });
+
+    // // get path
+    // let imgUrl = await uploadResult.text();
+
     // getting values from form:
     console.log($("#note-title").val());
     console.log($("#note-text").val());
@@ -111,11 +129,21 @@
     notes = await result.json();
   }
 
-  async function deleteNoteById(note){
-    let result = await fetch("/rest/notes/id", {
-      method: "DELETE",
-      BODY: JSON.stringify(note)
-    });
+  async function getNote(){
+    let result = await fetch("/rest/notes/id");
+    notes = await result.json();
   }
 
+  $("#deleteNoteByIdButton").click(function() {
+    deleteNoteById();
+
+  });
+
+  async function deleteNoteById(id){
+    let result = await fetch("/rest/notes/id", {
+      method: "DELETE",
+      body: JSON.stringify(id)
+    });
+
+  }
 })(jQuery);
