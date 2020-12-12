@@ -2,8 +2,11 @@ package server.database;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import express.utils.Utils;
+import org.apache.commons.fileupload.FileItem;
 import server.model.Path;
 
+import java.io.FileOutputStream;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +19,28 @@ public class PathsConnection {
 
     public PathsConnection(Connection dbConnection) {
         this.dbConnection = dbConnection;
+    }
+
+    public String uploadImage(FileItem image) {
+        // uploads folder in client directory is accessible from localhost
+        // because the entire client folder gets served through middleware.
+
+        // get filename
+        String imgUrl = "/uploads/" + image.getName();
+
+        // open outputstream with path to uploads folder in client directory
+        try (var os = new FileOutputStream(Paths.get("src/client" + imgUrl).toString())) {
+
+            // get required byte[] array to save to a file with file.get()
+            os.write(image.get());
+        } catch(Exception e) {
+            e.printStackTrace();
+
+            // if file is not saved, return null
+            return null;
+        }
+
+        return imgUrl;
     }
 
     public List<Path> getPaths(){
