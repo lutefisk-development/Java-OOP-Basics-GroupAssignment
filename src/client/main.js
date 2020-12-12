@@ -68,26 +68,7 @@
 
   // Getting and render the notes
   let notes = [];
-  let categories = [];
-
-  // getCategoriesFromDb();
-  populateNotesList();
-
-  async function getCategoriesFromDb(){
-  
-    let result = await fetch("/rest/categories");
-    categories = await result.json();
-
-    console.log(categories);
-
-    // populateNotesList();
-    
-  } 
-
-
-  function populateNotesList(){
-    getAllNotes();
-  }
+  getAllNotes();
 
   async function getAllNotes(){
     let result = await fetch("/rest/notes");
@@ -100,7 +81,6 @@
   async function renderNotes(){
 
     let allNotesElement = $("#all-notes");
-    let category = "";
 
     for (let i = 0; i < notes.length; i++) {
 
@@ -108,31 +88,10 @@
       if(notes[i].finishDate == null){
         notes[i].finishDate = "";
       }
-      
-      // for (let j = 0; j < categories.length; j++) {
-        
-      //   if(notes[i].categoryId == categories[j].id){
 
-      //     category = categories[j].category;
-      //     console.log(category);
-      //   }
-
-      // }
-
-      // console.log(notes[i].categoryId);
-      category = getCategoryByIdFromDb(notes[i].categoryId);
-      console.log(category);
-
-
+      let category = getCategoryByIdFromDb(notes[i].categoryId);
 
       if(notes[i].checked){
-
-        // let category = getCategoryByIdFromDb(notes[i])
-        // let categoryName = category.category;
-        // console.log(categoryName);
-
-          
-
 
         allNotesElement.append(
           '<article class = checktrue>' +
@@ -198,10 +157,6 @@
     }
   }
 
-
-
-  // Async functions for PathEndpoints
-
   async function getPathsFromDb(){
 
     let result = await fetch("/rest/paths");
@@ -231,9 +186,6 @@
 
   }
 
-
-
-
   async function getNote(){
     let result = await fetch("/rest/notes/id");
     notes = await result.json();
@@ -252,6 +204,13 @@
     
   }
 
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    console.log(categories);
+  } 
 
   async function getCategoryByIdFromDb(id){
 
@@ -262,8 +221,5 @@
     
     return category.category
   }
-
-
-
 
 })(jQuery);
