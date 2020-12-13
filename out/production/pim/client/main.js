@@ -39,7 +39,6 @@
 
   // create note form:
   $("#create-note-form").submit(function(e) {
-
     // stop form from submitting.
     e.preventDefault();
 
@@ -49,12 +48,11 @@
 
   // update note form:
   $("#update-note-form").submit(function(e) {
-
     // stop form from submitting.
     e.preventDefault();
 
     // handling the form data
-    handleFormSubmit();
+    //handleFormSubmit();
   })
 
   const handleFormSubmit = async () => {
@@ -68,7 +66,7 @@
     }
 
     // sending post request to endpoint for storing the file
-    let uploadResult = await fetch('/api/file-upload', {
+    let uploadResult = await fetch('/rest/file-upload', {
       method: 'POST',
       body: formData
     });
@@ -78,17 +76,29 @@
 
     console.log(fileUrl);
 
-<<<<<<< HEAD
-    // await fetch('/');
-
     // getting values from form:
-    // console.log($("#note-title").val());
-    // console.log($("#note-text").val());
-    // console.log($("#note-end").val());
-    // console.log($("#note-category").val());
+    console.log($("#note-title").val());
+    console.log($("#note-text").val());
+    console.log($("#note-end").val());
+    console.log($("#note-category").val());
+
+    // return back to frontpage
+    window.location.replace("http://localhost:1000/");
   }
-=======
-  // Getting and displaying the notes
+
+  // GETTING ALL CATEGORIES:
+  let categories = [];
+  const getAllcategories = async () => {
+
+    let res = await fetch("/rest/categories")
+    categories = await res.json();
+
+    categories.forEach(cat => console.log(cat));
+  }
+  getAllcategories();
+
+
+  // Getting and render the notes
   let notes = [];
   populateNotesList();
 
@@ -99,7 +109,6 @@
   async function getAllNotes(){
     let result = await fetch("/rest/notes");
     notes = await result.json();
->>>>>>> dev
 
     console.log(notes)
     renderNotes();
@@ -107,179 +116,76 @@
 
   function renderNotes(){
 
-    console.log(notes.length)
-
     let allNotesElement = $("#all-notes");
 
     for (let i = 0; i < notes.length; i++) {
 
-      
-      
-      // allNotesElement.append(
-        
-      //   '<p>' + notes[i].title + '</p>'
-      //   // '<p>test</p>'
+      // Check if finishDate is null, then set to an empty string
+      if(notes[i].finishDate == null){
+        notes[i].finishDate = "";
+      }
 
-
-
-      // );
-
-
- 
-      if(note[i].checked){
+      if(notes[i].checked){
 
         allNotesElement.append(
-
-          
           '<article class = checktrue>' +
-         '<div class="article-header">' +
-            '<p>' + note[i].category + '</p>' +
-            '<a href="/update_note.html?note-id=' + note[i].id + '" class="far fa-edit fa-2x"></a>' +
+         '<div class="article-header" id="'+ notes[i].id +'">' +
+            '<p>' + notes[i].categoryId + '</p>' +
+            '<a href="#" class="far fa-edit fa-2x update-single-noteId"></a>' +
           '</div>' +
           '<h1>' +
-            '<a href="/single_note.html?note-id=' + note[i].id + '">' +
-            note[i].title +
+          '<a href="#" class="get-single-noteId">' +
+            notes[i].title +
             '</a>' +
           '</h1>' +
           '<div class="dates">' +
             '<div class="created-date">' +
               '<p>Created:</p>' +
-              '<p>' + note[i].creationDate + '</p>' +
+              '<p>' + notes[i].creationDate + '</p>' +
             '</div>' +
             '<div class="end-date">' +
               '<p>Ends:</p>' +
-              '<p>' + note[i].finishDate + '</p>' +
+              '<p>' + notes[i].finishDate + '</p>' +
             '</div>' +
           '</div>' +
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-check-square fa-2x"></i>' + 
+            '<i class="far fa-check-square fa-2x"></i>' +
          '</div>' +
         '</article>'
-          
-          
         );
-        
+
       }
       else{
 
         allNotesElement.append(
-
-          
           '<article class = checkfalse>' +
-         '<div class="article-header">' +
-            '<p>' + note[i].category + '</p>' +
-            '<a href="/update_note.html?note-id=' + note[i].id + '" class="far fa-edit fa-2x"></a>' +
+         '<div class="article-header" id="'+ notes[i].id +'">' +
+            '<p>' + notes[i].categoryId + '</p>' +
+            '<a href="#" class="far fa-edit fa-2x update-single-noteId"></a>' +
           '</div>' +
-          '<h1>' +
-            '<a href="/single_note.html?note-id=' + note[i].id + '">' +
-            note[i].title +
-            '</a>' +
+          '<h1 class="get-single-noteId">' +
+          notes[i].title +
           '</h1>' +
           '<div class="dates">' +
             '<div class="created-date">' +
               '<p>Created:</p>' +
-              '<p>' + note[i].creationDate + '</p>' +
+              '<p>' + notes[i].creationDate + '</p>' +
             '</div>' +
             '<div class="end-date">' +
               '<p>Ends:</p>' +
-              '<p>' + note[i].finishDate + '</p>' +
+              '<p>' + notes[i].finishDate + '</p>' +
             '</div>' +
           '</div>' +
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-square fa-2x"></i>' + 
+            '<i class="far fa-square fa-2x"></i>' +
          '</div>' +
         '</article>'
-          
-        
         );
       }
-
-
-
-      
-      // if(note[i].checked){
-
-      //   allNotesElement.append(
-
-      //     '<p>test</p>'
-
-      //     `
-      //     <article class = check${note[i].checked}>
-      //     <div class="article-header">
-      //       <p>${note[i].category}</p>
-      //       <a href="/update_note.html?note-id=${note[i].id}" class="far fa-edit fa-2x"></a>
-      //     </div>
-      //     <h1>
-      //       <a href="/single_note.html?note-id=${note[i].id}">
-      //       ${note[i].title}
-      //       </a>
-      //     </h1>
-      //     <div class="dates">
-      //       <div class="created-date">
-      //         <p>Created:</p>
-      //         <p>${note[i].creationDate}</p>
-      //       </div>
-      //       <div class="end-date">
-      //         <p>Ends:</p>
-      //         <p>${note[i].finishDate}</p>
-      //       </div>
-      //     </div>
-      //     <div class="files-checked">
-      //       <i class="far fa-file-alt fa-2x"></i>
-      //       <i class="far fa-file-image fa-2x"></i>
-      //       <i class="far fa-check-square fa-2x"></i> 
-      //     </div>
-      //   </article>
-          
-      //     `
-      //   );
-        
-      // }
-      // else{
-
-      //   allNotesElement.append(
-
-      //     `
-      //     <article class = check${note[i].checked}>
-      //     <div class="article-header">
-      //       <p>${note[i].category}</p>
-      //       <a href="/update_note.html?note-id=${note[i].id}" class="far fa-edit fa-2x"></a>
-      //     </div>
-      //     <h1>
-      //       <a href="/single_note.html?note-id=${note[i].id}">
-      //       ${note[i].title}
-      //       </a>
-      //     </h1>
-      //     <div class="dates">
-      //       <div class="created-date">
-      //         <p>Created:</p>
-      //         <p>${note[i].creationDate}</p>
-      //       </div>
-      //       <div class="end-date">
-      //         <p>Ends:</p>
-      //         <p>${note[i].finishDate}</p>
-      //       </div>
-      //     </div>
-      //     <div class="files-checked">
-      //       <i class="far fa-file-alt fa-2x"></i>
-      //       <i class="far fa-file-image fa-2x"></i>
-      //       <i class="far fa-square fa-2x"></i>
-      //     </div>
-      //   </article>
-          
-      //   `
-      //   );
-      // }
-
-
-
-
-
-
     }
   }
 
