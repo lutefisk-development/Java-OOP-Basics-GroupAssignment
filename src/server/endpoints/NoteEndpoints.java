@@ -66,7 +66,7 @@ public class NoteEndpoints {
 //
 //            res.send("Update note with id:" + updateNote.getId());
 
-            // New code version 
+            // New code version
             Note note = (Note)req.getBody(Note.class);
             dbConnection.getNotesConnection().updateNote(note);
             res.send("Note was updated");

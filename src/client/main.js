@@ -280,6 +280,17 @@
     return category;
   }
 
+  async function updateNoteInDb(note){
+
+    let result = await fetch("/rest/notes/id", {
+      method: "PUT",
+      body: JSON.stringify(note)
+    })
+
+    console.log(await result.text());
+  }
+
+
 
   console.log("Slutet på koden");
 
