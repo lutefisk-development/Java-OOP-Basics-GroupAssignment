@@ -93,31 +93,41 @@
       finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
     }
 
-    let newPath = {
-      path: fileUrl ? fileUrl : null,
-      fileType: "img"
-    }
-
     // make a new note
     let noteResult = await fetch("/rest/notes", {
       method: "POST",
       body: JSON.stringify(newNote),
     });
 
-    // only make a new path in db if the user actually has inserted a file
-    if(newPath.path != null) {
-      let pathResult = await fetch("/rest/paths", {
-        method: "POST",
-        body: JSON.stringify(newPath),
-      });
+    let newNoteRes = await fetch("/rest/new");
+    let newNoteFromDb = await newNoteRes.json();
+
+    console.log(newNoteFromDb);
+
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      noteId: newNote.id,
+      fileType: "img"
     }
+
+    console.log(newPath);
+
+    // only make a new path in db if the user actually has inserted a file
+    // if(newPath.path != null) {
+    //   let pathResult = await fetch("/rest/paths", {
+    //     method: "POST",
+    //     body: JSON.stringify(newPath),
+    //   });
+    // }
+
+    window.location.replace("http://localhost:1000/");
   }
 
-  $("#home-btn").click(function() {
+  // $("#home-btn").click(function() {
 
-    // back to frontpage
-    window.location.replace("http://localhost:1000/");
-  });
+  //   // back to frontpage
+  //   window.location.replace("http://localhost:1000/");
+  // });
 
   // Getting and render the notes
   let notes = [];
@@ -232,12 +242,14 @@
   });
 
   const updateCheckedStatus = async note => {
-    let res = await fetch("/rest/notes" + note.id, {
+    $("#all-notes").empty();
+    let res = await fetch("/rest/notes/" + note.id, {
       method: "PUT",
       body: JSON.stringify(note),
     });
 
-    console.log(res.text());
+    console.log(res);
+    getAllNotes()
   }
 
   async function getPathsFromDb(){
