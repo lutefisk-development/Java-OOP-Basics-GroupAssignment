@@ -54,7 +54,7 @@
     e.preventDefault();
 
     // handling the form data
-    handleFormSubmit();
+    //handleFormSubmit();
   })
 
   const handleFormSubmit = async () => {
@@ -105,24 +105,19 @@
     });
 
     // only make a new path in db if the user actually has inserted a file
-    let pathResult;
     if(newPath.path != null) {
-      pathResult = await fetch("/rest/paths", {
+      let pathResult = await fetch("/rest/paths", {
         method: "POST",
         body: JSON.stringify(newPath),
       });
     }
-
-    // logging result after inserting to db
-    console.log(await noteResult.text());
-    if(pathResult) {
-      console.log(await pathResult.text())
-    }
-
-    // return back to frontpage
-    window.location.replace("http://localhost:1000/");
   }
 
+  $("#home-btn").click(function() {
+
+    // back to frontpage
+    window.location.replace("http://localhost:1000/");
+  });
 
   // Getting and render the notes
   let notes = [];
@@ -283,7 +278,7 @@
     let result = await fetch("/rest/categories/" + id);
     let category = await result.json();
 
-    //console.log(category);
+    console.log(category);
 
     return category.category
   }
