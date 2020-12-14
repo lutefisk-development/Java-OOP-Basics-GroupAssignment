@@ -32,8 +32,15 @@ public class NoteEndpoints {
             } catch (NumberFormatException exception) {
                 exception.printStackTrace();
             }
+        });
 
-
+        app.get("/rest/new", (req,res) -> {
+            try {
+                Note note = dbConnection.getNotesConnection().getLastNoteInserted();
+                res.json(note);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         app.post("/rest/notes", (req,res) -> {
