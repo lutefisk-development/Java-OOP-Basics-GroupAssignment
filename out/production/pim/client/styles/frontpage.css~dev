@@ -132,12 +132,17 @@ section#all-notes article.note-checked {
 }
 
 
-#all-notes .checktrue {
-  background-color: rgb(193, 225, 193);
+.checktrue {
+
+  background-color: teal;
+
 }
 
-#all-notes .checkfalse {
+.checkfalse {
+
   background-color: white;
 }
+
+
 
 /* /FRONT PAGE */

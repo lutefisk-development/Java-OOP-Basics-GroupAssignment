@@ -32,11 +32,6 @@ header .add-note {
   align-items: center;
 }
 
-header .add-note .fa-plus {
-  color: #000;
-  text-decoration: none;
-}
-
 header .add-note:hover .fa-plus {
   color: rgb(0, 26, 255);
 }
@@ -73,11 +68,6 @@ section#all-notes .article-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
-}
-
-section#all-notes .article-header a {
-  color: #000;
-  text-decoration: none;
 }
 
 section#all-notes .article-header .fa-edit:hover,
@@ -130,14 +120,4 @@ section#all-notes .files-checked .fa-square {
 section#all-notes article.note-checked {
   background-color: rgb(193, 225, 193);
 }
-
-
-#all-notes .checktrue {
-  background-color: rgb(193, 225, 193);
-}
-
-#all-notes .checkfalse {
-  background-color: white;
-}
-
 /* /FRONT PAGE */

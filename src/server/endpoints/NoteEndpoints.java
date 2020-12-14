@@ -37,9 +37,8 @@ public class NoteEndpoints {
         });
 
         app.delete("/rest/notes/:id", (req, res) -> {
-
-            Note note = (Note) req.getBody(Note.class);
-            dbConnection.getNotesConnection().deleteNoteById(note.getId());
+            int id = Integer.parseInt(req.getParam("id"));
+            dbConnection.getNotesConnection().deleteNoteById(id);
 
         });
 

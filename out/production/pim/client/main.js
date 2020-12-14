@@ -66,8 +66,137 @@
   })
 
 
+  // Getting and render the notes
+  let notes = [];
+  let categories = [];
+
+  // getCategoriesFromDb();
+  populateNotesList();
+
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    console.log(categories);
+
+    // populateNotesList();
+    
+  } 
 
 
+  function populateNotesList(){
+    getAllNotes();
+  }
+
+  async function getAllNotes(){
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    console.log(notes)
+    renderNotes();
+  }
+
+  async function renderNotes(){
+
+    let allNotesElement = $("#all-notes");
+    let category = "";
+
+    for (let i = 0; i < notes.length; i++) {
+
+      // Check if finishDate is null, then set to an empty string
+      if(notes[i].finishDate == null){
+        notes[i].finishDate = "";
+      }
+      
+      // for (let j = 0; j < categories.length; j++) {
+        
+      //   if(notes[i].categoryId == categories[j].id){
+
+      //     category = categories[j].category;
+      //     console.log(category);
+      //   }
+
+      // }
+
+      // console.log(notes[i].categoryId);
+      category = getCategoryByIdFromDb(notes[i].categoryId);
+      console.log(category);
+
+
+
+      if(notes[i].checked){
+
+        // let category = getCategoryByIdFromDb(notes[i])
+        // let categoryName = category.category;
+        // console.log(categoryName);
+
+          
+
+
+        allNotesElement.append(
+          '<article class = checktrue>' +
+         '<div class="article-header">' +
+            '<p>' + await category + '</p>' +
+            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+          '</div>' +
+          '<h1>' +
+            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+            notes[i].title +
+            '</a>' +
+          '</h1>' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>' + notes[i].creationDate + '</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>' + notes[i].finishDate + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="files-checked">' +
+            '<i class="far fa-file-alt fa-2x"></i>' +
+            '<i class="far fa-file-image fa-2x"></i>' +
+            '<i class="far fa-check-square fa-2x"></i>' + 
+         '</div>' +
+        '</article>'
+        );
+        
+      }
+      else{
+
+        allNotesElement.append(
+          '<article class = checkfalse>' +
+         '<div class="article-header">' +
+            '<p>' + await category + '</p>' +
+            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+          '</div>' +
+          '<h1>' +
+            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+            notes[i].title +
+            '</a>' +
+          '</h1>' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>' + notes[i].creationDate + '</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>' + notes[i].finishDate + '</p>' +
+            '</div>' +
+          '</div>' +
+          '<div class="files-checked">' +
+            '<i class="far fa-file-alt fa-2x"></i>' +
+            '<i class="far fa-file-image fa-2x"></i>' +
+            '<i class="far fa-square fa-2x"></i>' + 
+         '</div>' +
+        '</article>'
+        );
+      }
+    }
+  }
 
 
 
@@ -78,7 +207,6 @@
     let result = await fetch("/rest/paths");
     let paths = await result.json();
     console.log(paths);
-
   }
 
   async function createPathInDb(path){
@@ -103,19 +231,39 @@
 
   }
 
-  // la till en get all notes function för att spara i en array for att delete ska funka, kan ha fel!
-  let notes = [];
 
-  async function getAllNotes(){
-    let result = await fetch("/rest/notes");
+
+
+  async function getNote(){
+    let result = await fetch("/rest/notes/id");
     notes = await result.json();
   }
 
-  async function deleteNoteById(note){
+  $("#deleteNoteByIdButton").click(function() {
+    deleteNoteById();
+
+  });
+
+  async function deleteNoteById(id){
     let result = await fetch("/rest/notes/id", {
       method: "DELETE",
-      BODY: JSON.stringify(note)
+      body: JSON.stringify(id)
     });
+    
   }
+
+
+  async function getCategoryByIdFromDb(id){
+
+    let result = await fetch("/rest/categories/" + id);
+    let category = await result.json();
+
+    console.log(category);
+    
+    return category.category
+  }
+
+
+
 
 })(jQuery);
