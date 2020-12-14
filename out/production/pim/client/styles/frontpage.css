@@ -50,13 +50,20 @@ header .add-note:hover .fa-plus {
 section#all-notes {
   display: flex;
   flex-wrap: wrap;
+<<<<<<< HEAD
+=======
+  justify-content: space-between;
+>>>>>>> dev
 }
 
 section#all-notes article {
   background-color: #fff;
   margin-bottom: 3rem;
   padding: 1.5rem;
+<<<<<<< HEAD
   margin-left: 1.5rem;
+=======
+>>>>>>> dev
   width: 30%;
   -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
@@ -65,10 +72,13 @@ section#all-notes article {
   transition: 300ms ease-in-out;
 }
 
+<<<<<<< HEAD
 section#all-notes article:first-of-type{
   margin-left: 0;
 }
 
+=======
+>>>>>>> dev
 section#all-notes article:hover {
   transform: scale(1.1);
 }

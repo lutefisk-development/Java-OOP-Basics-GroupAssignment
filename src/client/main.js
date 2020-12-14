@@ -91,11 +91,7 @@
 
   // Getting and render the notes
   let notes = [];
-  populateNotesList();
-
-  function populateNotesList(){
-    getAllNotes();
-  }
+  getAllNotes();
 
   async function getAllNotes(){
     let result = await fetch("/rest/notes");
@@ -105,7 +101,7 @@
     renderNotes();
   }
 
-  function renderNotes(){
+  async function renderNotes(){
 
     let allNotesElement = $("#all-notes");
 
@@ -116,12 +112,17 @@
         notes[i].finishDate = "";
       }
 
+<<<<<<< HEAD
+=======
+      let category = getCategoryByIdFromDb(notes[i].categoryId);
+
+>>>>>>> dev
       if(notes[i].checked){
 
         allNotesElement.append(
           '<article class = checktrue>' +
          '<div class="article-header">' +
-            '<p>' + notes[i].categoryId + '</p>' +
+            '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -153,7 +154,7 @@
         allNotesElement.append(
           '<article class = checkfalse>' +
          '<div class="article-header">' +
-            '<p>' + notes[i].categoryId + '</p>' +
+            '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -181,10 +182,6 @@
       }
     }
   }
-
-
-
-  // Async functions for PathEndpoints
 
   async function getPathsFromDb(){
 
@@ -215,9 +212,6 @@
 
   }
 
-
-
-
   async function getNote(){
     let result = await fetch("/rest/notes/id");
     notes = await result.json();
@@ -235,4 +229,23 @@
     });
 
   }
+
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    console.log(categories);
+  } 
+
+  async function getCategoryByIdFromDb(id){
+
+    let result = await fetch("/rest/categories/" + id);
+    let category = await result.json();
+
+    console.log(category);
+    
+    return category.category
+  }
+
 })(jQuery);

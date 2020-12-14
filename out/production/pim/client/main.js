@@ -90,6 +90,7 @@
   let categories = [];
   const getAllcategories = async () => {
 
+<<<<<<< HEAD
     let res = await fetch("/rest/categories")
     categories = await res.json();
 
@@ -98,9 +99,26 @@
   getAllcategories();
 
 
+=======
+>>>>>>> dev
   // Getting and render the notes
   let notes = [];
+  let categories = [];
+
+  // getCategoriesFromDb();
   populateNotesList();
+
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    console.log(categories);
+
+    // populateNotesList();
+    
+  } 
+
 
   function populateNotesList(){
     getAllNotes();
@@ -114,9 +132,14 @@
     renderNotes();
   }
 
+<<<<<<< HEAD
   function renderNotes(){
+=======
+  async function renderNotes(){
+>>>>>>> dev
 
     let allNotesElement = $("#all-notes");
+    let category = "";
 
     for (let i = 0; i < notes.length; i++) {
 
@@ -124,6 +147,7 @@
       if(notes[i].finishDate == null){
         notes[i].finishDate = "";
       }
+<<<<<<< HEAD
 
       if(notes[i].checked){
 
@@ -135,6 +159,42 @@
           '</div>' +
           '<h1>' +
           '<a href="#" class="get-single-noteId">' +
+=======
+      
+      // for (let j = 0; j < categories.length; j++) {
+        
+      //   if(notes[i].categoryId == categories[j].id){
+
+      //     category = categories[j].category;
+      //     console.log(category);
+      //   }
+
+      // }
+
+      // console.log(notes[i].categoryId);
+      category = getCategoryByIdFromDb(notes[i].categoryId);
+      console.log(category);
+
+
+
+      if(notes[i].checked){
+
+        // let category = getCategoryByIdFromDb(notes[i])
+        // let categoryName = category.category;
+        // console.log(categoryName);
+
+          
+
+
+        allNotesElement.append(
+          '<article class = checktrue>' +
+         '<div class="article-header">' +
+            '<p>' + await category + '</p>' +
+            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+          '</div>' +
+          '<h1>' +
+            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+>>>>>>> dev
             notes[i].title +
             '</a>' +
           '</h1>' +
@@ -161,12 +221,23 @@
 
         allNotesElement.append(
           '<article class = checkfalse>' +
+<<<<<<< HEAD
          '<div class="article-header" id="'+ notes[i].id +'">' +
             '<p>' + notes[i].categoryId + '</p>' +
             '<a href="#" class="far fa-edit fa-2x update-single-noteId"></a>' +
           '</div>' +
           '<h1 class="get-single-noteId">' +
           notes[i].title +
+=======
+         '<div class="article-header">' +
+            '<p>' + await category + '</p>' +
+            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+          '</div>' +
+          '<h1>' +
+            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+            notes[i].title +
+            '</a>' +
+>>>>>>> dev
           '</h1>' +
           '<div class="dates">' +
             '<div class="created-date">' +
@@ -240,6 +311,26 @@
       method: "DELETE",
       body: JSON.stringify(id)
     });
+<<<<<<< HEAD
 
   }
+=======
+    
+  }
+
+
+  async function getCategoryByIdFromDb(id){
+
+    let result = await fetch("/rest/categories/" + id);
+    let category = await result.json();
+
+    console.log(category);
+    
+    return category.category
+  }
+
+
+
+
+>>>>>>> dev
 })(jQuery);
