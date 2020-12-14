@@ -43,30 +43,6 @@ public class NoteEndpoints {
         });
 
         app.put("/rest/notes/:id", (req, res) -> {
-
-//            // from user
-//            Note note = (Note) req.getBody(Note.class);
-//
-//            // create a note to be updated
-//            int id = Integer.parseInt(req.getParam("id"));
-//            Note updateNote =  dbConnection.getNotesConnection().getNoteById(id);
-//
-//
-//            // field from body and update fields
-//            updateNote.setText(note.getText());
-//            updateNote.setTitle(note.getTitle());
-//            updateNote.setChecked(note.isChecked());
-//            updateNote.setFinishDate(note.getFinishDate());
-//            updateNote.setCategoryId(note.getCategoryId());
-//
-//            // update database with connection form user
-//            dbConnection.getNotesConnection().updateNote(note);
-//
-//            System.out.println(updateNote.toString());
-//
-//            res.send("Update note with id:" + updateNote.getId());
-
-            // New code version
             Note note = (Note)req.getBody(Note.class);
             dbConnection.getNotesConnection().updateNote(note);
             res.send("Note was updated");
