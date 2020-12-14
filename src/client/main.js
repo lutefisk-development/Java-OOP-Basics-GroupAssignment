@@ -93,31 +93,34 @@
       finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
     }
 
-    let newPath = {
-      path: fileUrl ? fileUrl : null,
-      fileType: "img"
-    }
-
     // make a new note
     let noteResult = await fetch("/rest/notes", {
       method: "POST",
       body: JSON.stringify(newNote),
     });
 
-    // only make a new path in db if the user actually has inserted a file
+    // getting back the new note
+    let newNoteRes = await fetch("/rest/new");
+    let newNoteFromDb = await newNoteRes.json();
+
+    // setting path variable
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      noteId: newNoteFromDb.id,
+      fileType: "img"
+    }
+
+    //only make a new path in db if the user actually has inserted a file
     if(newPath.path != null) {
       let pathResult = await fetch("/rest/paths", {
         method: "POST",
         body: JSON.stringify(newPath),
       });
     }
-  }
-
-  $("#home-btn").click(function() {
 
     // back to frontpage
     window.location.replace("http://localhost:1000/");
-  });
+  }
 
   // Getting and render the notes
   let notes = [];
