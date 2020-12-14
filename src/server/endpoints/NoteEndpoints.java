@@ -36,6 +36,25 @@ public class NoteEndpoints {
 
         });
 
+        app.post("/rest/notes", (req,res) -> {
+            Note newNote = (Note) req.getBody(Note.class);
+            int id = dbConnection.getNotesConnection().createNote(newNote);
+
+            if(id != 0) {
+                newNote.setId(id);
+                Note note = dbConnection.getNotesConnection().getNoteById(id);
+
+                if(note == null) {
+                    System.out.println("No record of this note");
+                } else {
+                    System.out.println( );
+                }
+            } else {
+                System.out.println("Something went wrong");
+            }
+
+        });
+
         app.delete("/rest/notes/:id", (req, res) -> {
             int id = Integer.parseInt(req.getParam("id"));
             dbConnection.getNotesConnection().deleteNoteById(id);
