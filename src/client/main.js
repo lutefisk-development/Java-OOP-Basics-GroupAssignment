@@ -67,12 +67,21 @@
 
 
   // Getting and render the notes
+  console.log("Början på koden");
+
   let notes = [];
   getAllNotes();
 
+  let currentUrl = window.location.href;
+  console.log(currentUrl);
+
   async function getAllNotes(){
+
+    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
+    console.log("Efter await");
+
 
     console.log(notes)
     renderNotes();
@@ -89,14 +98,14 @@
         notes[i].finishDate = "";
       }
 
-      let category = getCategoryByIdFromDb(notes[i].categoryId);
+      let category = await getCategoryByIdFromDb(notes[i].categoryId);
 
       if(notes[i].checked){
 
         allNotesElement.append(
           '<article class = checktrue>' +
          '<div class="article-header">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -128,7 +137,7 @@
         allNotesElement.append(
           '<article class = checkfalse>' +
          '<div class="article-header">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -154,8 +163,62 @@
         '</article>'
         );
       }
+
+      if(currentUrl.includes("note-id=")){
+        updateSingleNote();
+      }
+
     }
   }
+
+
+  async function updateSingleNote(){
+
+    let id = currentUrl.split("note-id=")[1];
+    let note = await getNoteById(id);
+
+    let category = await getCategoryByIdFromDb(await note.categoryId);
+    let categories = await getCategoriesFromDb();
+
+    $("#note-title").val(await note.title);
+    $("#note-text").val(await note.text);
+    $("#note-end").val(await note.finishDate);
+    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
+
+    let categoryList = document.querySelector("#note-category");
+    categoryList.innerHTML = "";
+
+
+    for (let i = 0; i < categories.length; i++) {
+
+      cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
+      categoryList.innerHTML += cat;
+    }
+
+
+    
+    $("#update-button").click(async function(){
+
+      let id = currentUrl.split("note-id=")[1];
+      let note = await getNoteById(id);
+
+      let updatedNote = {
+
+        id: await note.id,
+        title: $("#note-title").val(),
+        text: $("#note-text").val(),
+        categoryId: document.getElementById("note-category").selectedIndex + 1,
+        checked: await note.checked,
+        creationDate: await note.creationDate,
+        finishDate: $("#note-end").val()
+      }
+
+      updateNoteInDb(updatedNote);
+      window.location.replace("http://localhost:1000/");
+    });
+
+  }
+
 
   async function getPathsFromDb(){
 
@@ -186,10 +249,15 @@
 
   }
 
-  async function getNote(){
-    let result = await fetch("/rest/notes/id");
-    notes = await result.json();
+  async function getNoteById(id){
+    let result = await fetch("/rest/notes/" + id);
+    note = await result.json();
+
+    console.log(note);
+    return note;
   }
+
+
 
   $("#deleteNoteByIdButton").click(function() {
     deleteNoteById();
@@ -207,9 +275,11 @@
   async function getCategoriesFromDb(){
   
     let result = await fetch("/rest/categories");
-    categories = await result.json();
+    let categories = await result.json();
 
     console.log(categories);
+
+    return categories
   } 
 
   async function getCategoryByIdFromDb(id){
@@ -219,7 +289,21 @@
 
     console.log(category);
     
-    return category.category
+    return category;
   }
+
+  async function updateNoteInDb(note){
+
+    let result = await fetch("/rest/notes/id", {
+      method: "PUT",
+      body: JSON.stringify(note)
+    })
+
+    console.log(await result.text());
+  }
+
+
+
+  console.log("Slutet på koden");
 
 })(jQuery);

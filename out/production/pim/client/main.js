@@ -67,31 +67,21 @@
 
 
   // Getting and render the notes
+  console.log("Början på koden");
+
   let notes = [];
-  let categories = [];
+  getAllNotes();
 
-  // getCategoriesFromDb();
-  populateNotesList();
-
-  async function getCategoriesFromDb(){
-  
-    let result = await fetch("/rest/categories");
-    categories = await result.json();
-
-    console.log(categories);
-
-    // populateNotesList();
-    
-  } 
-
-
-  function populateNotesList(){
-    getAllNotes();
-  }
+  let currentUrl = window.location.href;
+  console.log(currentUrl);
 
   async function getAllNotes(){
+
+    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
+    console.log("Efter await");
+
 
     console.log(notes)
     renderNotes();
@@ -100,7 +90,6 @@
   async function renderNotes(){
 
     let allNotesElement = $("#all-notes");
-    let category = "";
 
     for (let i = 0; i < notes.length; i++) {
 
@@ -108,36 +97,15 @@
       if(notes[i].finishDate == null){
         notes[i].finishDate = "";
       }
-      
-      // for (let j = 0; j < categories.length; j++) {
-        
-      //   if(notes[i].categoryId == categories[j].id){
 
-      //     category = categories[j].category;
-      //     console.log(category);
-      //   }
-
-      // }
-
-      // console.log(notes[i].categoryId);
-      category = getCategoryByIdFromDb(notes[i].categoryId);
-      console.log(category);
-
-
+      let category = await getCategoryByIdFromDb(notes[i].categoryId);
 
       if(notes[i].checked){
-
-        // let category = getCategoryByIdFromDb(notes[i])
-        // let categoryName = category.category;
-        // console.log(categoryName);
-
-          
-
 
         allNotesElement.append(
           '<article class = checktrue>' +
          '<div class="article-header">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -169,7 +137,7 @@
         allNotesElement.append(
           '<article class = checkfalse>' +
          '<div class="article-header">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -195,12 +163,91 @@
         '</article>'
         );
       }
+
+      if(currentUrl.includes("note-id=")){
+        fillSingleNote();
+      }
+
     }
   }
 
 
+  async function fillSingleNote(){
 
-  // Async functions for PathEndpoints
+    let categoryList = [];
+
+    let id = currentUrl.split("note-id=")[1];
+    let note = await getNoteById(id);
+
+    let category = await getCategoryByIdFromDb(await note.categoryId);
+    let categories = await getCategoriesFromDb();
+
+    $("#note-title").val(await note.title);
+    $("#note-text").val(await note.text);
+
+
+    // $("#note-category").innerHTML = "";
+    categoryList = $("#note-category");
+    categoryList.innerHTML = "";
+
+    console.log("Körs innan for loop");
+
+    for (let i = 0; i < categories.length; i++) {
+      
+      categoryList.append(
+
+        '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' 
+      );
+    }
+
+    $("#note-end").val(await note.finishDate);
+    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
+
+    // let catId = document.getElementById("note-category").selectedIndex;
+    // console.log("CatId: " + catId);
+
+    
+    $("#update-button").click(async function(){
+
+      let id = currentUrl.split("note-id=")[1];
+      let note = await getNoteById(id);
+
+      let updatedNote = {
+
+        id: await note.id,
+        title: $("#note-title").val(),
+        text: $("#note-text").val(),
+        categoryId: document.getElementById("note-category").selectedIndex + 1,
+        checked: await note.checked,
+        creationDate: await note.creationDate,
+        finishDate: $("#note-end").val()
+      }
+
+
+
+
+      // let catId = document.getElementById("note-category").selectedIndex;
+      // console.log("CatId click: " + catId);
+      // updatedNote.categoryId = catId;
+      // console.log("Note catId: " + updatedNote.categoryId);
+      
+      console.log("Button pressed");
+      console.log("ID: " + updatedNote.id);
+      console.log("title: " + updatedNote.title);
+      console.log("category ID: " + updatedNote.categoryId);
+      console.log("checked: " + updatedNote.checked);
+      console.log("creationDate: " + updatedNote.creationDate);
+      console.log("finishDate: " + updatedNote.finishDate);
+
+    });
+
+  }
+
+
+
+
+
+
 
   async function getPathsFromDb(){
 
@@ -231,13 +278,15 @@
 
   }
 
+  async function getNoteById(id){
+    let result = await fetch("/rest/notes/" + id);
+    note = await result.json();
 
-
-
-  async function getNote(){
-    let result = await fetch("/rest/notes/id");
-    notes = await result.json();
+    console.log(note);
+    return note;
   }
+
+
 
   $("#deleteNoteByIdButton").click(function() {
     deleteNoteById();
@@ -252,6 +301,15 @@
     
   }
 
+  async function getCategoriesFromDb(){
+  
+    let result = await fetch("/rest/categories");
+    let categories = await result.json();
+
+    console.log(categories);
+
+    return categories
+  } 
 
   async function getCategoryByIdFromDb(id){
 
@@ -260,10 +318,21 @@
 
     console.log(category);
     
-    return category.category
+    return category;
+  }
+
+  async function updateNoteInDb(note){
+
+    let result = await fetch("/rest/notes/id", {
+      method: "PUT",
+      body: JSON.stringify(note)
+    })
+
+    console.log(await result.text());
   }
 
 
 
+  console.log("Slutet på koden");
 
 })(jQuery);
