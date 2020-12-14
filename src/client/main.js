@@ -193,23 +193,38 @@
   }
 
 
+  // Gets current note id from url
 
-
-  async function getNote(){
-    let result = await fetch("/rest/notes/id");
-    notes = await result.json();
-  }
-
-  $("#deleteNoteByIdButton").click(function() {
-    deleteNoteById();
-
-  });
-
-  async function deleteNoteById(id){
-    let result = await fetch("/rest/notes/id", {
-      method: "DELETE",
-      body: JSON.stringify(id)
-    });
+  function getCurrentNoteId(){
+    let url = window.location.href;
+    let urlArray = url.split("=");
+    let currentNoteId = urlArray[1];
     
   }
+
+  //  connects deletebutton to deletenote function
+  $("#deleteNoteByIdButton").click(function(){
+   
+    let url = window.location.href;
+    let urlArray = url.split("=");
+    let currentNoteId = urlArray[1];
+    
+    deleteNoteById(currentNoteId)
+    window.location.replace("http://localhost:1000/");
+   
+    
+  })
+  
+    
+    async function deleteNoteById(note){
+      let result = await fetch("/rest/notes/" + note,{
+      method: "DELETE",
+      body: JSON.stringify()
+        
+  
+    })
+     
+  
+  
+    }
 })(jQuery);
