@@ -63,8 +63,8 @@ public class PathsConnection {
         return paths;
     }
 
-    public void createPath(Path path){
-
+    public int createPath(Path path){
+        int newPathId = 0;
         String query = "INSERT INTO paths (path, fileType, noteId) VALUES(?,?,?)";
 
         try {
@@ -74,9 +74,16 @@ public class PathsConnection {
             statement.setInt(3,path.getNoteId());
             statement.executeUpdate();
 
+            ResultSet res = statement.getGeneratedKeys();
+            while(res.next()) {
+                newPathId = res.getInt(1);
+            }
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+
+        return newPathId;
     }
 
     public boolean deletePath(Path path){
@@ -104,6 +111,28 @@ public class PathsConnection {
 
         Path path = null;
         String query = "SELECT * FROM paths WHERE id = ?";
+
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setInt(1,id);
+            ResultSet resultSet = statement.executeQuery();
+
+            Path [] resultSetArray = (Path[]) Utils.readResultSetToObject(resultSet, Path[].class);
+            path = resultSetArray[0];
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return path;
+    }
+
+    // gets a path by passing in a id for a note
+    public Path getPathByNoteId(int id) {
+        Path path = null;
+        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = 1";
 
         try {
             PreparedStatement statement = dbConnection.prepareStatement(query);
