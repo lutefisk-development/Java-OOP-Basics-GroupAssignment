@@ -56,17 +56,13 @@ section#all-notes article {
   background-color: #fff;
   margin-bottom: 3rem;
   padding: 1.5rem;
-  margin-left: 1.5rem;
+  margin-right: 1.5rem;
   width: 30%;
   -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   border-radius: 5px;
   transition: 300ms ease-in-out;
-}
-
-section#all-notes article:first-of-type{
-  margin-left: 0;
 }
 
 section#all-notes article:hover {
