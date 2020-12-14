@@ -47,7 +47,8 @@ public class NoteEndpoints {
                 if(note == null) {
                     System.out.println("No record of this note");
                 } else {
-                    System.out.println( );
+                    System.out.println( note.toString());
+                    res.send("Successfully created a new note");
                 }
             } else {
                 System.out.println("Something went wrong");
