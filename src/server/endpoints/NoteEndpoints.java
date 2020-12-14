@@ -36,10 +36,20 @@ public class NoteEndpoints {
 
         });
 
-        app.delete("/rest/notes/:id", (req, res) -> {
-            int id = Integer.parseInt(req.getParam("id"));
-            dbConnection.getNotesConnection().deleteNoteById(id);
+        app.delete("/rest/notes/:id", (request, response) -> {
 
+            int id = 0;
+            try {
+                id = Integer.parseInt(request.getParam("id"));
+                System.out.println(id);
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println(id);
+            dbConnection.getNotesConnection().deleteNoteById(id);
+            response.json(id);
         });
 
         app.put("/rest/notes/:id", (req, res) -> {
