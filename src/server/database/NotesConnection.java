@@ -61,6 +61,27 @@ public class NotesConnection {
         return note;
     }
 
+    // getting last inserted note in db, used for setting the id when inserting a new Path
+    public Note getLastNoteInserted() {
+        Note note = null;
+
+        String query = "SELECT * FROM notes ORDER BY id DESC LIMIT 1";
+
+        try {
+            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            ResultSet res = stmt.executeQuery();
+            Note [] noteFromRs = (Note[]) Utils.readResultSetToObject(res, Note[].class);
+            note = noteFromRs[0];
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return note;
+    }
+
     public int createNote(Note note) {
         int newNoteId = 0;
         String query = "INSERT INTO notes (title, text, categoryId, checked, creationDate, finishDate) VALUES (?, ?, ?, ?, ?, ?)";
