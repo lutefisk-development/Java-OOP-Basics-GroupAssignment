@@ -147,8 +147,8 @@
       if(notes[i].checked){
 
         allNotesElement.append(
-          '<article class = checktrue>' +
-         '<div class="article-header">' +
+          '<article class="checktrue">' +
+         '<div class="article-header" id="'+notes[i].id+'">' +
             '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
@@ -170,7 +170,7 @@
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-check-square fa-2x"></i>' +
+            '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
          '</div>' +
         '</article>'
         );
@@ -179,8 +179,8 @@
       else{
 
         allNotesElement.append(
-          '<article class = checkfalse>' +
-         '<div class="article-header">' +
+          '<article>' +
+         '<div class="article-header" id="'+notes[i].id+'">' +
             '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
@@ -202,12 +202,42 @@
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-square fa-2x"></i>' +
+            '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
          '</div>' +
         '</article>'
         );
       }
     }
+  }
+
+  // event for checking and unchecking notes
+  $(document).ready(function(){
+    $(document).on('click', '.check-note', function() {
+
+      // loops through all notes
+      notes.forEach(note => {
+
+        // if the note id of the clicked note matches a note in the array of notes
+        if(note.id == $(this).attr('id')) {
+
+          // then change the checked value (if true, becomes false)
+          note.checked = !note.checked;
+
+          // call method for updating the value in db
+          updateCheckedStatus(note);
+        }
+      });
+
+    });
+  });
+
+  const updateCheckedStatus = async note => {
+    let res = await fetch("/rest/notes" + note.id, {
+      method: "PUT",
+      body: JSON.stringify(note),
+    });
+
+    console.log(res.text());
   }
 
   async function getPathsFromDb(){
