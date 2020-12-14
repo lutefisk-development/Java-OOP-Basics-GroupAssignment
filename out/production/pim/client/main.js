@@ -174,6 +174,8 @@
 
   async function fillSingleNote(){
 
+    let categoryList = [];
+
     let id = currentUrl.split("note-id=")[1];
     let note = await getNoteById(id);
 
@@ -183,7 +185,12 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
 
-    let categoryList = $("#note-category");
+
+    // $("#note-category").innerHTML = "";
+    categoryList = $("#note-category");
+    categoryList.innerHTML = "";
+
+    console.log("Körs innan for loop");
 
     for (let i = 0; i < categories.length; i++) {
       
@@ -195,6 +202,45 @@
 
     $("#note-end").val(await note.finishDate);
     document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
+
+    // let catId = document.getElementById("note-category").selectedIndex;
+    // console.log("CatId: " + catId);
+
+    
+    $("#update-button").click(async function(){
+
+      let id = currentUrl.split("note-id=")[1];
+      let note = await getNoteById(id);
+
+      let updatedNote = {
+
+        id: await note.id,
+        title: $("#note-title").val(),
+        text: $("#note-text").val(),
+        categoryId: document.getElementById("note-category").selectedIndex + 1,
+        checked: await note.checked,
+        creationDate: await note.creationDate,
+        finishDate: $("#note-end").val()
+      }
+
+
+
+
+      // let catId = document.getElementById("note-category").selectedIndex;
+      // console.log("CatId click: " + catId);
+      // updatedNote.categoryId = catId;
+      // console.log("Note catId: " + updatedNote.categoryId);
+      
+      console.log("Button pressed");
+      console.log("ID: " + updatedNote.id);
+      console.log("title: " + updatedNote.title);
+      console.log("category ID: " + updatedNote.categoryId);
+      console.log("checked: " + updatedNote.checked);
+      console.log("creationDate: " + updatedNote.creationDate);
+      console.log("finishDate: " + updatedNote.finishDate);
+
+    });
+
   }
 
 
@@ -231,11 +277,6 @@
     console.log(await result.text());
 
   }
-
-  // async function getNote(){
-  //   let result = await fetch("/rest/notes/id");
-  //   notes = await result.json();
-  // }
 
   async function getNoteById(id){
     let result = await fetch("/rest/notes/" + id);
@@ -279,6 +320,17 @@
     
     return category;
   }
+
+  async function updateNoteInDb(note){
+
+    let result = await fetch("/rest/notes/id", {
+      method: "PUT",
+      body: JSON.stringify(note)
+    })
+
+    console.log(await result.text());
+  }
+
 
 
   console.log("Slutet på koden");
