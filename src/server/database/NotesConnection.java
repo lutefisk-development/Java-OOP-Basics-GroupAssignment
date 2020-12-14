@@ -61,6 +61,33 @@ public class NotesConnection {
         return note;
     }
 
+    public int createNote(Note note) {
+        int newNoteId = 0;
+        String query = "INSERT INTO notes (title, text, categoryId, checked, creationDate, finishDate) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try {
+            PreparedStatement stmt = dbConnection.prepareStatement(query);
+            stmt.setString(1, note.getTitle());
+            stmt.setString(2, note.getText());
+            stmt.setInt(3, note.getCategoryId());
+            stmt.setBoolean(4, note.isChecked());
+            stmt.setString(5, note.getCreationDate());
+            stmt.setString(6, note.getFinishDate());
+
+            stmt.executeUpdate();
+            ResultSet res = stmt.getGeneratedKeys();
+
+            while(res.next()) {
+                newNoteId = res.getInt(1);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+        return newNoteId;
+    }
+
     public void deleteNoteById(int id){
         String query = "DELETE FROM notes WHERE id = ?";
 
