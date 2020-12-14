@@ -99,43 +99,45 @@
       body: JSON.stringify(newNote),
     });
 
+    // getting back the new note
     let newNoteRes = await fetch("/rest/new");
     let newNoteFromDb = await newNoteRes.json();
 
-    console.log(newNoteFromDb);
-
+    // setting path variable
     let newPath = {
       path: fileUrl ? fileUrl : null,
-      noteId: newNote.id,
+      noteId: newNoteFromDb.id,
       fileType: "img"
     }
 
-    console.log(newPath);
+    //only make a new path in db if the user actually has inserted a file
+    if(newPath.path != null) {
+      let pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
 
-    // only make a new path in db if the user actually has inserted a file
-    // if(newPath.path != null) {
-    //   let pathResult = await fetch("/rest/paths", {
-    //     method: "POST",
-    //     body: JSON.stringify(newPath),
-    //   });
-    // }
-
+    // back to frontpage
     window.location.replace("http://localhost:1000/");
   }
 
-  // $("#home-btn").click(function() {
-
-  //   // back to frontpage
-  //   window.location.replace("http://localhost:1000/");
-  // });
-
   // Getting and render the notes
+  console.log("Början på koden");
+
   let notes = [];
   getAllNotes();
 
+  let currentUrl = window.location.href;
+  console.log(currentUrl);
+
   async function getAllNotes(){
+
+    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
+    console.log("Efter await");
+
 
     console.log(notes)
     renderNotes();
@@ -152,7 +154,7 @@
         notes[i].finishDate = "";
       }
 
-      let category = getCategoryByIdFromDb(notes[i].categoryId);
+      let category = await getCategoryByIdFromDb(notes[i].categoryId);
 
       if(notes[i].checked){
 
@@ -217,6 +219,11 @@
         '</article>'
         );
       }
+
+      if(currentUrl.includes("note-id=")){
+        updateSingleNote();
+      }
+
     }
   }
 
@@ -252,6 +259,55 @@
     getAllNotes()
   }
 
+
+  async function updateSingleNote(){
+
+    let id = currentUrl.split("note-id=")[1];
+    let note = await getNoteById(id);
+
+    let category = await getCategoryByIdFromDb(await note.categoryId);
+    let categories = await getCategoriesFromDb();
+
+    $("#note-title").val(await note.title);
+    $("#note-text").val(await note.text);
+    $("#note-end").val(await note.finishDate);
+    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
+
+    let categoryList = document.querySelector("#note-category");
+    categoryList.innerHTML = "";
+
+
+    for (let i = 0; i < categories.length; i++) {
+
+      cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
+      categoryList.innerHTML += cat;
+    }
+
+
+
+    $("#update-button").click(async function(){
+
+      let id = currentUrl.split("note-id=")[1];
+      let note = await getNoteById(id);
+
+      let updatedNote = {
+
+        id: await note.id,
+        title: $("#note-title").val(),
+        text: $("#note-text").val(),
+        categoryId: document.getElementById("note-category").selectedIndex + 1,
+        checked: await note.checked,
+        creationDate: await note.creationDate,
+        finishDate: $("#note-end").val()
+      }
+
+      updateNoteInDb(updatedNote);
+      window.location.replace("http://localhost:1000/");
+    });
+
+  }
+
+
   async function getPathsFromDb(){
 
     let result = await fetch("/rest/paths");
@@ -281,10 +337,15 @@
 
   }
 
-  async function getNote(){
-    let result = await fetch("/rest/notes/id");
-    notes = await result.json();
+  async function getNoteById(id){
+    let result = await fetch("/rest/notes/" + id);
+    note = await result.json();
+
+    console.log(note);
+    return note;
   }
+
+
 
   $("#deleteNoteByIdButton").click(function() {
     deleteNoteById();
@@ -299,11 +360,11 @@
 
   }
 
-  let categories = []
+
   async function getCategoriesFromDb(){
 
     let result = await fetch("/rest/categories");
-    categories = await result.json();
+    let categories = await result.json();
 
     // fill dropdown in form with categories when creating a new note
     let $createNoteFormDropdown = $("#create-note-form").find($("#note-category"));
@@ -311,8 +372,10 @@
     categories.forEach(category => {
       $createNoteFormDropdown.append('<option value="'+category.id+'">'+category.category+'</option>');
     });
+
+    return categories
   }
-  getCategoriesFromDb();
+  let categories = getCategoriesFromDb();
 
 
   async function getCategoryByIdFromDb(id){
@@ -322,7 +385,21 @@
 
     console.log(category);
 
-    return category.category
+    return category;
   }
+
+  async function updateNoteInDb(note){
+
+    let result = await fetch("/rest/notes/id", {
+      method: "PUT",
+      body: JSON.stringify(note)
+    })
+
+    console.log(await result.text());
+  }
+
+
+
+  console.log("Slutet på koden");
 
 })(jQuery);
