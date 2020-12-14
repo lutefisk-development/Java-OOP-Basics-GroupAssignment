@@ -54,40 +54,70 @@
     e.preventDefault();
 
     // handling the form data
-    handleFormSubmit();
+    //handleFormSubmit();
   })
 
   const handleFormSubmit = async () => {
-    // getting file
-    let $fileArray = $("#note-file").prop('files');
-    let formData = new FormData();
+    // getting file if user has added one
+    let fileUrl;
+    if($("#note-file").prop('files').length > 0) {
+      let $fileArray = $("#note-file").prop('files');
+      let formData = new FormData();
 
-    // adding the file to formData
-    for(let file of $fileArray) {
-      formData.append('files', file, file.name);
+      // adding the file to formData
+      for(let file of $fileArray) {
+        formData.append('files', file, file.name);
+      }
+
+      // sending post request to endpoint for storing the file
+      let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // get path
+      fileUrl = await uploadResult.text();
     }
 
-    // sending post request to endpoint for storing the file
-    let uploadResult = await fetch('/rest/file-upload', {
-      method: 'POST',
-      body: formData
+    // setting the date for today:
+    let today = new Date();
+    today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+    // creating variables for inserting into db
+    let newNote = {
+      title: $("#note-title").val(),
+      text: $("#note-text").val(),
+      categoryId: $("#note-category").val() == 0 ? 1 : $("#note-category").val(),
+      checked: false,
+      creationDate: today,
+      finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
+    }
+
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      fileType: "img"
+    }
+
+    // make a new note
+    let noteResult = await fetch("/rest/notes", {
+      method: "POST",
+      body: JSON.stringify(newNote),
     });
 
-    // get path
-    let fileUrl = await uploadResult.text();
-
-    console.log(fileUrl);
-
-    // return back to frontpage
-    window.location.replace("http://localhost:1000/");
-
-    // getting values from form:
-    // console.log($("#note-title").val());
-    // console.log($("#note-text").val());
-    // console.log($("#note-end").val());
-    // console.log($("#note-category").val());
+    // only make a new path in db if the user actually has inserted a file
+    if(newPath.path != null) {
+      let pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
   }
 
+  $("#home-btn").click(function() {
+
+    // back to frontpage
+    window.location.replace("http://localhost:1000/");
+  });
 
   // Getting and render the notes
   let notes = [];
@@ -112,11 +142,8 @@
         notes[i].finishDate = "";
       }
 
-<<<<<<< HEAD
-=======
       let category = getCategoryByIdFromDb(notes[i].categoryId);
 
->>>>>>> dev
       if(notes[i].checked){
 
         allNotesElement.append(
@@ -230,13 +257,21 @@
 
   }
 
+  let categories = []
   async function getCategoriesFromDb(){
-  
+
     let result = await fetch("/rest/categories");
     categories = await result.json();
 
-    console.log(categories);
-  } 
+    // fill dropdown in form with categories when creating a new note
+    let $createNoteFormDropdown = $("#create-note-form").find($("#note-category"));
+    $createNoteFormDropdown.append('<option value="1">Pick a Category</option>');
+    categories.forEach(category => {
+      $createNoteFormDropdown.append('<option value="'+category.id+'">'+category.category+'</option>');
+    });
+  }
+  getCategoriesFromDb();
+
 
   async function getCategoryByIdFromDb(id){
 
@@ -244,7 +279,7 @@
     let category = await result.json();
 
     console.log(category);
-    
+
     return category.category
   }
 
