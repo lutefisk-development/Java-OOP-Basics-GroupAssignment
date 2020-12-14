@@ -43,13 +43,9 @@
     // stop form from submitting.
     e.preventDefault();
 
-    // getting values from form:
-    console.log($("#note-title").val());
-    console.log($("#note-text").val());
-    console.log($("#note-end").val());
-    console.log($("#note-category").val());
-
-  })
+    // handling the form data
+    handleFormSubmit();
+  });
 
   // update note form:
   $("#update-note-form").submit(function(e) {
@@ -57,14 +53,74 @@
     // stop form from submitting.
     e.preventDefault();
 
-    // getting values from form:
-    console.log($("#note-title").val());
-    console.log($("#note-text").val());
-    console.log($("#note-end").val());
-    console.log($("#note-category").val());
-
+    // handling the form data
+    //handleFormSubmit();
   })
 
+  const handleFormSubmit = async () => {
+    // getting file if user has added one
+    let fileUrl;
+    if($("#note-file").prop('files').length > 0) {
+      let $fileArray = $("#note-file").prop('files');
+      let formData = new FormData();
+
+      // adding the file to formData
+      for(let file of $fileArray) {
+        formData.append('files', file, file.name);
+      }
+
+      // sending post request to endpoint for storing the file
+      let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // get path
+      fileUrl = await uploadResult.text();
+    }
+
+    // setting the date for today:
+    let today = new Date();
+    today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+    // creating variables for inserting into db
+    let newNote = {
+      title: $("#note-title").val(),
+      text: $("#note-text").val(),
+      categoryId: $("#note-category").val() == 0 ? 1 : $("#note-category").val(),
+      checked: false,
+      creationDate: today,
+      finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
+    }
+
+    // make a new note
+    let noteResult = await fetch("/rest/notes", {
+      method: "POST",
+      body: JSON.stringify(newNote),
+    });
+
+    // getting back the new note
+    let newNoteRes = await fetch("/rest/new");
+    let newNoteFromDb = await newNoteRes.json();
+
+    // setting path variable
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      noteId: newNoteFromDb.id,
+      fileType: "img"
+    }
+
+    //only make a new path in db if the user actually has inserted a file
+    if(newPath.path != null) {
+      let pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
+
+    // back to frontpage
+    window.location.replace("http://localhost:1000/");
+  }
 
   // Getting and render the notes
   console.log("Början på koden");
@@ -103,9 +159,9 @@
       if(notes[i].checked){
 
         allNotesElement.append(
-          '<article class = checktrue>' +
-         '<div class="article-header">' +
-            '<p>' + await category.category + '</p>' +
+          '<article class="checktrue">' +
+         '<div class="article-header" id="'+notes[i].id+'">' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -126,18 +182,18 @@
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-check-square fa-2x"></i>' + 
+            '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
          '</div>' +
         '</article>'
         );
-        
+
       }
       else{
 
         allNotesElement.append(
-          '<article class = checkfalse>' +
-         '<div class="article-header">' +
-            '<p>' + await category.category + '</p>' +
+          '<article>' +
+         '<div class="article-header" id="'+notes[i].id+'">' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -158,7 +214,7 @@
           '<div class="files-checked">' +
             '<i class="far fa-file-alt fa-2x"></i>' +
             '<i class="far fa-file-image fa-2x"></i>' +
-            '<i class="far fa-square fa-2x"></i>' + 
+            '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
          '</div>' +
         '</article>'
         );
@@ -169,6 +225,38 @@
       }
 
     }
+  }
+
+  // event for checking and unchecking notes
+  $(document).ready(function(){
+    $(document).on('click', '.check-note', function() {
+
+      // loops through all notes
+      notes.forEach(note => {
+
+        // if the note id of the clicked note matches a note in the array of notes
+        if(note.id == $(this).attr('id')) {
+
+          // then change the checked value (if true, becomes false)
+          note.checked = !note.checked;
+
+          // call method for updating the value in db
+          updateCheckedStatus(note);
+        }
+      });
+
+    });
+  });
+
+  const updateCheckedStatus = async note => {
+    $("#all-notes").empty();
+    let res = await fetch("/rest/notes/" + note.id, {
+      method: "PUT",
+      body: JSON.stringify(note),
+    });
+
+    console.log(res);
+    getAllNotes()
   }
 
 
@@ -196,7 +284,7 @@
     }
 
 
-    
+
     $("#update-button").click(async function(){
 
       let id = currentUrl.split("note-id=")[1];
@@ -269,18 +357,26 @@
       method: "DELETE",
       body: JSON.stringify(id)
     });
-    
+
   }
 
+
   async function getCategoriesFromDb(){
-  
+
     let result = await fetch("/rest/categories");
     let categories = await result.json();
 
-    console.log(categories);
+    // fill dropdown in form with categories when creating a new note
+    let $createNoteFormDropdown = $("#create-note-form").find($("#note-category"));
+    $createNoteFormDropdown.append('<option value="1">Pick a Category</option>');
+    categories.forEach(category => {
+      $createNoteFormDropdown.append('<option value="'+category.id+'">'+category.category+'</option>');
+    });
 
     return categories
-  } 
+  }
+  let categories = getCategoriesFromDb();
+
 
   async function getCategoryByIdFromDb(id){
 
@@ -288,7 +384,7 @@
     let category = await result.json();
 
     console.log(category);
-    
+
     return category;
   }
 
