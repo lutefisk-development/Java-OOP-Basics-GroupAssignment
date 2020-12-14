@@ -165,14 +165,14 @@
       }
 
       if(currentUrl.includes("note-id=")){
-        fillSingleNote();
+        updateSingleNote();
       }
 
     }
   }
 
 
-  async function fillSingleNote(){
+  async function updateSingleNote(){
 
     let id = currentUrl.split("note-id=")[1];
     let note = await getNoteById(id);
@@ -182,25 +182,42 @@
 
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
-
-    let categoryList = $("#note-category");
-
-    for (let i = 0; i < categories.length; i++) {
-      
-      categoryList.append(
-
-        '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' 
-      );
-    }
-
     $("#note-end").val(await note.finishDate);
     document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
+
+    let categoryList = document.querySelector("#note-category");
+    categoryList.innerHTML = "";
+
+
+    for (let i = 0; i < categories.length; i++) {
+
+      cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
+      categoryList.innerHTML += cat;
+    }
+
+
+    
+    $("#update-button").click(async function(){
+
+      let id = currentUrl.split("note-id=")[1];
+      let note = await getNoteById(id);
+
+      let updatedNote = {
+
+        id: await note.id,
+        title: $("#note-title").val(),
+        text: $("#note-text").val(),
+        categoryId: document.getElementById("note-category").selectedIndex + 1,
+        checked: await note.checked,
+        creationDate: await note.creationDate,
+        finishDate: $("#note-end").val()
+      }
+
+      updateNoteInDb(updatedNote);
+      window.location.replace("http://localhost:1000/");
+    });
+
   }
-
-
-
-
-
 
 
   async function getPathsFromDb(){
@@ -231,11 +248,6 @@
     console.log(await result.text());
 
   }
-
-  // async function getNote(){
-  //   let result = await fetch("/rest/notes/id");
-  //   notes = await result.json();
-  // }
 
   async function getNoteById(id){
     let result = await fetch("/rest/notes/" + id);
