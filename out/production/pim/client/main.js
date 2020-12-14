@@ -39,6 +39,7 @@
 
   // create note form:
   $("#create-note-form").submit(function(e) {
+
     // stop form from submitting.
     e.preventDefault();
 
@@ -48,81 +49,84 @@
 
   // update note form:
   $("#update-note-form").submit(function(e) {
+
     // stop form from submitting.
     e.preventDefault();
 
     // handling the form data
-    //handleFormSubmit();
+    handleFormSubmit();
   })
 
   const handleFormSubmit = async () => {
-    // getting file
-    let $fileArray = $("#note-file").prop('files');
-    let formData = new FormData();
+    // getting file if user has added one
+    let fileUrl;
+    if($("#note-file").prop('files').length > 0) {
+      let $fileArray = $("#note-file").prop('files');
+      let formData = new FormData();
 
-    // adding the file to formData
-    for(let file of $fileArray) {
-      formData.append('files', file, file.name);
+      // adding the file to formData
+      for(let file of $fileArray) {
+        formData.append('files', file, file.name);
+      }
+
+      // sending post request to endpoint for storing the file
+      let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // get path
+      fileUrl = await uploadResult.text();
     }
 
-    // sending post request to endpoint for storing the file
-    let uploadResult = await fetch('/rest/file-upload', {
-      method: 'POST',
-      body: formData
+    // setting the date for today:
+    let today = new Date();
+    today = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+
+    // creating variables for inserting into db
+    let newNote = {
+      title: $("#note-title").val(),
+      text: $("#note-text").val(),
+      categoryId: $("#note-category").val() == 0 ? 1 : $("#note-category").val(),
+      checked: false,
+      creationDate: today,
+      finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
+    }
+
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      fileType: "img"
+    }
+
+    // make a new note
+    let noteResult = await fetch("/rest/notes", {
+      method: "POST",
+      body: JSON.stringify(newNote),
     });
 
-    // get path
-    let fileUrl = await uploadResult.text();
+    // only make a new path in db if the user actually has inserted a file
+    let pathResult;
+    if(newPath.path != null) {
+      pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
 
-    console.log(fileUrl);
-
-    // getting values from form:
-    console.log($("#note-title").val());
-    console.log($("#note-text").val());
-    console.log($("#note-end").val());
-    console.log($("#note-category").val());
+    // logging result after inserting to db
+    console.log(await noteResult.text());
+    if(pathResult) {
+      console.log(await pathResult.text())
+    }
 
     // return back to frontpage
     window.location.replace("http://localhost:1000/");
   }
 
-  // GETTING ALL CATEGORIES:
-  let categories = [];
-  const getAllcategories = async () => {
 
-<<<<<<< HEAD
-    let res = await fetch("/rest/categories")
-    categories = await res.json();
-
-    categories.forEach(cat => console.log(cat));
-  }
-  getAllcategories();
-
-
-=======
->>>>>>> dev
   // Getting and render the notes
   let notes = [];
-  let categories = [];
-
-  // getCategoriesFromDb();
-  populateNotesList();
-
-  async function getCategoriesFromDb(){
-  
-    let result = await fetch("/rest/categories");
-    categories = await result.json();
-
-    console.log(categories);
-
-    // populateNotesList();
-    
-  } 
-
-
-  function populateNotesList(){
-    getAllNotes();
-  }
+  getAllNotes();
 
   async function getAllNotes(){
     let result = await fetch("/rest/notes");
@@ -132,14 +136,9 @@
     renderNotes();
   }
 
-<<<<<<< HEAD
-  function renderNotes(){
-=======
   async function renderNotes(){
->>>>>>> dev
 
     let allNotesElement = $("#all-notes");
-    let category = "";
 
     for (let i = 0; i < notes.length; i++) {
 
@@ -147,44 +146,10 @@
       if(notes[i].finishDate == null){
         notes[i].finishDate = "";
       }
-<<<<<<< HEAD
+
+      let category = getCategoryByIdFromDb(notes[i].categoryId);
 
       if(notes[i].checked){
-
-        allNotesElement.append(
-          '<article class = checktrue>' +
-         '<div class="article-header" id="'+ notes[i].id +'">' +
-            '<p>' + notes[i].categoryId + '</p>' +
-            '<a href="#" class="far fa-edit fa-2x update-single-noteId"></a>' +
-          '</div>' +
-          '<h1>' +
-          '<a href="#" class="get-single-noteId">' +
-=======
-      
-      // for (let j = 0; j < categories.length; j++) {
-        
-      //   if(notes[i].categoryId == categories[j].id){
-
-      //     category = categories[j].category;
-      //     console.log(category);
-      //   }
-
-      // }
-
-      // console.log(notes[i].categoryId);
-      category = getCategoryByIdFromDb(notes[i].categoryId);
-      console.log(category);
-
-
-
-      if(notes[i].checked){
-
-        // let category = getCategoryByIdFromDb(notes[i])
-        // let categoryName = category.category;
-        // console.log(categoryName);
-
-          
-
 
         allNotesElement.append(
           '<article class = checktrue>' +
@@ -194,7 +159,6 @@
           '</div>' +
           '<h1>' +
             '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
->>>>>>> dev
             notes[i].title +
             '</a>' +
           '</h1>' +
@@ -221,14 +185,6 @@
 
         allNotesElement.append(
           '<article class = checkfalse>' +
-<<<<<<< HEAD
-         '<div class="article-header" id="'+ notes[i].id +'">' +
-            '<p>' + notes[i].categoryId + '</p>' +
-            '<a href="#" class="far fa-edit fa-2x update-single-noteId"></a>' +
-          '</div>' +
-          '<h1 class="get-single-noteId">' +
-          notes[i].title +
-=======
          '<div class="article-header">' +
             '<p>' + await category + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
@@ -237,7 +193,6 @@
             '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
             notes[i].title +
             '</a>' +
->>>>>>> dev
           '</h1>' +
           '<div class="dates">' +
             '<div class="created-date">' +
@@ -259,10 +214,6 @@
       }
     }
   }
-
-
-
-  // Async functions for PathEndpoints
 
   async function getPathsFromDb(){
 
@@ -293,9 +244,6 @@
 
   }
 
-
-
-
   async function getNote(){
     let result = await fetch("/rest/notes/id");
     notes = await result.json();
@@ -311,12 +259,23 @@
       method: "DELETE",
       body: JSON.stringify(id)
     });
-<<<<<<< HEAD
 
   }
-=======
-    
+
+  let categories = []
+  async function getCategoriesFromDb(){
+
+    let result = await fetch("/rest/categories");
+    categories = await result.json();
+
+    // fill dropdown in form with categories when creating a new note
+    let $createNoteFormDropdown = $("#create-note-form").find($("#note-category"));
+    $createNoteFormDropdown.append('<option value="1">Pick a Category</option>');
+    categories.forEach(category => {
+      $createNoteFormDropdown.append('<option value="'+category.id+'">'+category.category+'</option>');
+    });
   }
+  getCategoriesFromDb();
 
 
   async function getCategoryByIdFromDb(id){
@@ -324,13 +283,9 @@
     let result = await fetch("/rest/categories/" + id);
     let category = await result.json();
 
-    console.log(category);
-    
+    //console.log(category);
+
     return category.category
   }
 
-
-
-
->>>>>>> dev
 })(jQuery);
