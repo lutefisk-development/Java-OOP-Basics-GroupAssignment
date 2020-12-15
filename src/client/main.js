@@ -325,39 +325,45 @@
       }
     });
 
-    // checked clicked
+
+    // All notes clicked
+
+    $("#allnotes-sidebar").click(async function() {
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+
+      let result = await fetch("/rest/notes");
+      notes = await result.json();
+      renderNotes();
+
+    });
+
+    // Checked clicked
 
     $("#checked-sidebar").click(async function() {
 
-      console.log("Clicked checked sidebar");
-
       for (let i = 0; i < notes.length; i++) {
 
-        if(notes[i].checked == true){
+        if(notes[i].checked == false){
 
           notes.splice(i,1);
         }
 
       }
 
-      $("#side-navbar").css("width", "0");
-      $(".container").removeClass("blur");
-      $(".navbar-wrapper").removeClass("open");
-
+      exitSideNavBar();
       $("#all-notes").empty();
       renderNotes();
-
-
     });
-
-
-
-
-
-
   }
 
+  function exitSideNavBar(){
 
+    $("#side-navbar").css("width", "0");
+    $(".container").removeClass("blur");
+    $(".navbar-wrapper").removeClass("open");
+  }
 
 
 
