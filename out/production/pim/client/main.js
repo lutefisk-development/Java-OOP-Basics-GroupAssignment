@@ -3,8 +3,6 @@
 // Scoping jquery:
 (function($) {
 
-  // ALL JAVASCRIPT CODE HERE
-
   // opening and closing navbar:
   $("#open-navbar").click(function() {
     $("#side-navbar").css("width", "500px");
@@ -23,19 +21,6 @@
     e.preventDefault();
     $(this).ekkoLightbox();
   });
-
-  // testing querystring
-  // -------------------
-  // function getParameterByName(name, url = window.location.href) {
-  //   name = name.replace(/[\[\]]/g, '\\$&');
-  //   let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-  //       results = regex.exec(url);
-  //   if (!results) return null;
-  //   if (!results[2]) return '';
-  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  // }
-  // console.log(getParameterByName("note-id"));
-
 
   // create note form:
   $("#create-note-form").submit(function(e) {
@@ -165,7 +150,7 @@
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
-            '<a onclick="renderNoteById()" href="/single_note.html?note-id=' + notes[i].id + '">' +
+            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
             notes[i].title +
             '</a>' +
           '</h1>' +
@@ -227,46 +212,6 @@
     }
   }
 
-
-
-
-  async function renderNoteById(){
-
-    let singleNote = document.querySelector("#single-note");
-    let note = await getNoteById(id);
-    console.log(id);
-    
-    singleNote.innerHTML = "";
-    
-    let sNote = `
-    <section id="single-note">
-    <div class="section-header">
-      <div class="dates">
-        <div class="created-date">
-          <p>Created:</p>
-          <p>${note.creationDate}</p>
-        </div>
-        <div class="end-date">
-          <p>Ends:</p>
-          <p>${note.finishDate}</p>
-        </div>
-      </div>
-      
-      <div class="edit-delete">
-        <a href="/update_note.html?note-id=${note.id}" class="far fa-edit fa-2x"></a>
-        <i class="far fa-trash-alt fa-2x"></i>
-      </div>
-    </div>
-    
-    <div class="section-body">
-      <h2>${note.title}</h2>
-      <p>${note.text}</p>
-    </div>
-    `;
-
-    singleNote.innerHTML += sNote;
-  }
-
   // event for checking and unchecking notes
   $(document).ready(function(){
     $(document).on('click', '.check-note', function() {
@@ -297,113 +242,6 @@
 
     console.log(res);
     getAllNotes()
-  }
-
-  // show single note by id
-  if(currentUrl.includes("/single_note.html?note-id=")) {
-    let id = currentUrl.split("=")[1];
-    showSingleNoteById(id);
-  }
-
-  async function showSingleNoteById(id) {
-
-    let note = await getNoteById(id);
-    let paths = await getPathsFromDb(id);
-
-    console.log(note);
-    console.log(paths);
-
-    if(note.finishDate == "") {
-      note.finishDate = "No date set"
-    }
-
-    let html = `
-
-    <section id="single-note">
-    <div class="section-header">
-      <div class="dates">
-        <div class="created-date">
-          <p>Created:</p>
-          <p>2020-12-10</p>
-        </div>
-        <div class="end-date">
-          <p>Ends:</p>
-          <p>2020-12-15</p>
-        </div>
-      </div>
-
-      <div class="edit-delete">
-        <a href="/update_note.html?note-id=1" class="far fa-edit fa-2x"></a>
-        <i class="far fa-trash-alt fa-2x"></i>
-      </div>
-    </div>
-
-    <div class="section-body">
-      <h2>Lorem Ipsum</h2>
-      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio laboriosam ipsam cumque at asperiores voluptates veniam unde ipsum corporis facilis. Earum necessitatibus eum sapiente aliquam, laudantium unde veritatis tempora aut aliquid, nihil totam ipsum velit itaque mollitia voluptas, inventore quasi est eaque quod! Nisi quasi consequatur eaque sequi neque. Corrupti.</p>
-    </div>
-
-    <div class="section-images">
-      <figure class="img-wrapper" id="img-one">
-        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=252" alt="">
-        </a>
-      </figure>
-
-      <figure class="img-wrapper" id="img-two">
-        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=253" alt="">
-        </a>
-      </figure>
-
-      <figure class="img-wrapper" id="img-three">
-        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=254" alt="">
-        </a>
-      </figure>
-
-      <figure class="img-wrapper" id="img-four">
-        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=252" alt="">
-        </a>
-      </figure>
-
-      <figure class="img-wrapper" id="img-five">
-        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=253" alt="">
-        </a>
-      </figure>
-
-      <figure class="img-wrapper" id="img-six">
-        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox">
-          <img src="https://unsplash.it/600.jpg?image=254" alt="">
-        </a>
-      </figure>
-    </div>
-
-    <div class="section-files">
-      <div class="file-container" id="file-one">
-        <i class="far fa-file-alt fa-3x"></i>
-        <div>lorem-ipsum.pdf</div>
-      </div>
-      <div class="file-container" id="file-two">
-        <i class="far fa-file-alt fa-3x"></i>
-        <div>lorem-ipsum.pdf</div>
-      </div>
-      <div class="file-container" id="file-three">
-        <i class="far fa-file-alt fa-3x"></i>
-        <div>lorem-ipsum.pdf</div>
-      </div>
-      <div class="file-container" id="file-four">
-        <i class="far fa-file-alt fa-3x"></i>
-        <div>lorem-ipsum.pdf</div>
-      </div>
-    </div>
-  </section>
-
-    `
-
-
   }
 
 
@@ -454,13 +292,149 @@
 
   }
 
+    // show single note by id
+    if(currentUrl.includes("/single_note.html?note-id=")) {
+      let id = currentUrl.split("=")[1];
+      showSingleNoteById(id);
+    }
+
+    async function showSingleNoteById(id) {
+      let note = await getNoteById(id);
+      let paths = await getPathsFromDb(id);
+
+          // checks if there is a end date, if not set default message
+    if(note.finishDate == "") {
+      note.finishDate = "No date set"
+    }
+
+    let imgs = [];
+    let files = [];
+
+    // loops through paths and divids up files and images into other arrays
+    for(let i = 0; i < paths.length; i++) {
+
+      if(paths[i].fileType == "img") {
+        imgs.push(paths[i]);
+      } else {
+        files.push(paths[i]);
+      }
+
+    }
+
+    if(imgs.length > 0) {
+
+      $("#single-note").append(
+        '<div class="section-header">' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>'+ note.creationDate +'</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>'+ note.finishDate +'</p>' +
+            '</div>' +
+          '</div>'+
+          '<div class="edit-delete">' +
+            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
+            '<i class="far fa-trash-alt fa-2x"></i>' +
+          '</div>' +
+        '</div>'+
+        '<div class="section-body">' +
+          '<h2>'+ note.title +'</h2>' +
+          '<p>'+ note.text +'</p>' +
+        '</div>' +
+        '<div class="section-images"></div>'
+      );
+
+    } else if(files.length > 0) {
+      $("#single-note").append(
+        '<div class="section-header">' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>'+ note.creationDate +'</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>'+ note.finishDate +'</p>' +
+            '</div>' +
+          '</div>'+
+          '<div class="edit-delete">' +
+            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
+            '<i class="far fa-trash-alt fa-2x"></i>' +
+          '</div>' +
+        '</div>'+
+        '<div class="section-body">' +
+          '<h2>'+ note.title +'</h2>' +
+          '<p>'+ note.text +'</p>' +
+        '</div>' +
+        '<div class="section-files"></div>'
+      );
+    
+    } else {
+
+      $("#single-note").append(
+        '<div class="section-header">' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>'+ note.creationDate +'</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>'+ note.finishDate +'</p>' +
+            '</div>' +
+          '</div>'+
+          '<div class="edit-delete">' +
+            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
+            '<i class="far fa-trash-alt fa-2x"></i>' +
+          '</div>' +
+        '</div>'+
+        '<div class="section-body">' +
+          '<h2>'+ note.title +'</h2>' +
+          '<p>'+ note.text +'</p>' +
+        '</div>'
+      );
+    
+    }
+
+      // append imgages to .section-images
+      if(imgs.length > 0) {
+        for(let i = 0; i < imgs.length; i++) {
+          $(".section-images").append(
+            '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
+              '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
+                '<img src="'+ imgs[i].path +'" alt="">' +
+              '</a>' +
+            '</figure>'
+          );
+        };
+      };
+  
+      // append files to .section-files
+      if(files.length > 0) {
+        for(let i = 0; i < files.length; i++) {
+          $(".section-files").append(
+            '<div class="file-container" id="file-'+ files[i].id +'">' +
+              '<i class="far fa-file-alt fa-3x"></i>' +
+              '<div>'+ files[i].path +'</div>' +
+            '</div>'
+          );
+        };
+      };
+
+
+
+    }
+
 
   async function getPathsFromDb(id){
 
-    let result = await fetch("/rest/paths" + id);
+    let result = await fetch("/rest/paths" +id);
     let paths = await result.json();
-    //console.log(paths);
-
+    console.log(paths);
+    
     return paths;
   }
 
@@ -490,7 +464,7 @@
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
-    //console.log(note);
+    console.log(note);
     return note;
   }
 
