@@ -362,7 +362,7 @@
           '</div>'+
           '<div class="edit-delete">' +
             '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
           '</div>' +
         '</div>'+
         '<div class="section-body">' +
@@ -388,7 +388,7 @@
           '</div>'+
           '<div class="edit-delete">' +
             '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
           '</div>' +
         '</div>'+
         '<div class="section-body">' +
@@ -470,20 +470,34 @@
 
 
 
-  $("#deleteNoteByIdButton").click(function() {
-    deleteNoteById();
+  // $("#deleteNoteByIdButton").click(function() {
+  //   deleteNoteById();
 
+  // });
+
+  $(document).ready(function() {
+
+    $(document).on('click', '#deleteNoteByIdButton', function(id) {
+      
+      let url = window.location.href;
+      let urlArray = url.split("=");
+      let currentNoteId = urlArray[1];
+      console.log(currentNoteId)
+      
+      deleteNoteById(currentNoteId)
+      window.location.replace("http://localhost:1000/");
+    });
   });
-
+  
   async function deleteNoteById(id){
-    let result = await fetch("/rest/notes/id", {
+    let result = await fetch("/rest/notes/"+id, {
       method: "DELETE",
       body: JSON.stringify(id)
-    });
+  });
 
   }
-
-
+  
+  
   async function getCategoriesFromDb(){
 
     let result = await fetch("/rest/categories");
