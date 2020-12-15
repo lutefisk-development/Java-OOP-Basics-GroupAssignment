@@ -32,7 +32,34 @@ public class NoteEndpoints {
             } catch (NumberFormatException exception) {
                 exception.printStackTrace();
             }
+        });
 
+        app.get("/rest/new", (req,res) -> {
+            try {
+                Note note = dbConnection.getNotesConnection().getLastNoteInserted();
+                res.json(note);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        app.post("/rest/notes", (req,res) -> {
+            Note newNote = (Note) req.getBody(Note.class);
+            int id = dbConnection.getNotesConnection().createNote(newNote);
+
+            if(id != 0) {
+                newNote.setId(id);
+                Note note = dbConnection.getNotesConnection().getNoteById(id);
+
+                if(note == null) {
+                    System.out.println("No record of this note");
+                } else {
+                    System.out.println( note.toString());
+                    res.send("Successfully created a new note");
+                }
+            } else {
+                System.out.println("Something went wrong");
+            }
 
         });
 
@@ -43,30 +70,9 @@ public class NoteEndpoints {
         });
 
         app.put("/rest/notes/:id", (req, res) -> {
-
-            // from user
-            Note note = (Note) req.getBody(Note.class);
-
-            // create a note to be updated
-            int id = Integer.parseInt(req.getParam("id"));
-            Note updateNote =  dbConnection.getNotesConnection().getNoteById(id);
-
-
-            // field from body and update fields
-            updateNote.setText(note.getText());
-            updateNote.setTitle(note.getTitle());
-            updateNote.setChecked(note.isChecked());
-            updateNote.setFinishDate(note.getFinishDate());
-            updateNote.setCategoryId(note.getCategoryId());
-
-            // update database with connection form user
+            Note note = (Note)req.getBody(Note.class);
             dbConnection.getNotesConnection().updateNote(note);
-
-            System.out.println(updateNote.toString());
-
-            res.send("Update note with id:" + updateNote.getId());
-
-
+            res.send("Note was updated");
         });
 
     }

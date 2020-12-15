@@ -73,51 +73,30 @@
 }
 
 #create-note-container #create-note-form .wrapper,
-#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
-#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
-#update-note-container #update-note-form .wrapper,
-#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
-#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
+#update-note-container #update-note-form .wrapper {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 1.5rem;
 }
 
-#create-note-container #create-note-form .all-files-wrapper .file-wrapper .input-group,
-#create-note-container #create-note-form .all-files-wrapper .img-wrapper .input-group,
-#update-note-container #update-note-form .all-files-wrapper .file-wrapper .input-group,
-#update-note-container #update-note-form .all-files-wrapper .img-wrapper .input-group {
-  margin-bottom: .5rem;
-}
-
-#create-note-container #create-note-form .all-files-wrapper,
-#update-note-container #update-note-form .all-files-wrapper {
-  display: flex;
-
-}
-
-#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
-#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
-#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
-#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
-  flex-direction: column;
-}
 
 #create-note-container #create-note-form .wrapper .form-floating,
-#create-note-container #create-note-form .all-files-wrapper .file-wrapper,
-#create-note-container #create-note-form .all-files-wrapper .img-wrapper,
-#update-note-container #update-note-form .wrapper .form-floating,
-#update-note-container #update-note-form .all-files-wrapper .file-wrapper,
-#update-note-container #update-note-form .all-files-wrapper .img-wrapper {
+#update-note-container #update-note-form .wrapper .form-floating {
   margin-right: 2rem;
   width: 20%;
 }
 
+#create-note-container #create-note-form .wrapper .input-group,
+#update-note-container #update-note-form .wrapper .input-group {
+  width: auto;
+}
+
+#create-note-container #create-note-form .wrapper .input-group #note-file,
+#update-note-container #update-note-form .wrapper .input-group #note-file{
+  height: 100%;
+}
+
 #create-note-container #create-note-form .wrapper .form-floating:last-of-type,
-#create-note-container #create-note-form .all-files-wrapper .file-wrapper .input-group:last-of-type,
-#create-note-container #create-note-form .all-files-wrapper .img-wrapper .input-group:last-of-type,
-#update-note-container #update-note-form .wrapper .form-floating:last-of-type,
-#update-note-container #update-note-form .all-files-wrapper .file-wrapper .input-group:last-of-type,
-#update-note-container #update-note-form .all-files-wrapper .img-wrapper .input-group:last-of-type {
+#update-note-container #update-note-form .wrapper .form-floating:last-of-type {
   margin-right: 0;
 }
