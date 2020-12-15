@@ -161,7 +161,7 @@
         allNotesElement.append(
           '<article class="checktrue">' +
          '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -193,7 +193,7 @@
         allNotesElement.append(
           '<article>' +
          '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -306,6 +306,42 @@
     });
 
   }
+
+  function filter(){
+
+    // categories
+
+    $("#open-navbar").click(async function() {
+
+      let categories = await getCategoriesFromDb();
+      let cateElement = $("#filter-categories");
+  
+  
+      for (let i = 0; i < categories.length; i++) {
+  
+          cateElement.append(
+  
+            '<li>' + await categories[i].category + '</li>'
+          );
+      }
+
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+  }
+
+
+
 
 
   async function getPathsFromDb(){
