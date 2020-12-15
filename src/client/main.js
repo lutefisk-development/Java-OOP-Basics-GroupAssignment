@@ -141,6 +141,7 @@
 
     console.log(notes)
     renderNotes();
+    filter();
   }
 
   async function renderNotes(){
@@ -306,6 +307,42 @@
     });
 
   }
+
+  function filter(){
+
+
+
+    // categories
+
+    $("#open-navbar").click(async function() {
+
+      let categories = await getCategoriesFromDb();
+      let catList = document.querySelector("#filter-categories");
+      catList.innerHTML = "";
+  
+  
+      for (let i = 0; i < categories.length; i++) {
+  
+        category =  '<li>' + categories[i].category + '</li>';
+        catList.innerHTML += category;
+      }
+
+
+
+
+
+    });
+
+
+
+
+
+
+
+  }
+
+
+
 
 
   async function getPathsFromDb(){
