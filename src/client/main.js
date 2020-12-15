@@ -431,7 +431,7 @@
 
   async function getPathsFromDb(id){
 
-    let result = await fetch("/rest/paths" +id);
+    let result = await fetch("/rest/paths/" +id);
     let paths = await result.json();
     console.log(paths);
     
