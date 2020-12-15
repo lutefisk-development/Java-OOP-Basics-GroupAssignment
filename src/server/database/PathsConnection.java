@@ -132,7 +132,7 @@ public class PathsConnection {
     // gets a path by passing in a id for a note
     public Path getPathByNoteId(int id) {
         Path path = null;
-        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = 1";
+        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = ?";
 
         try {
             PreparedStatement statement = dbConnection.prepareStatement(query);
