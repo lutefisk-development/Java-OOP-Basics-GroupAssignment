@@ -220,7 +220,7 @@
         );
       }
 
-      if(currentUrl.includes("note-id=")){
+      if(currentUrl.includes("/update_note.html?note-id=")){
         updateSingleNote();
       }
 
@@ -299,6 +299,113 @@
     getAllNotes()
   }
 
+  // show single note by id
+  if(currentUrl.includes("/single_note.html?note-id=")) {
+    let id = currentUrl.split("=")[1];
+    showSingleNoteById(id);
+  }
+
+  async function showSingleNoteById(id) {
+
+    let note = await getNoteById(id);
+    let paths = await getPathsFromDb(id);
+
+    console.log(note);
+    console.log(paths);
+
+    if(note.finishDate == "") {
+      note.finishDate = "No date set"
+    }
+
+    let html = `
+
+    <section id="single-note">
+    <div class="section-header">
+      <div class="dates">
+        <div class="created-date">
+          <p>Created:</p>
+          <p>2020-12-10</p>
+        </div>
+        <div class="end-date">
+          <p>Ends:</p>
+          <p>2020-12-15</p>
+        </div>
+      </div>
+
+      <div class="edit-delete">
+        <a href="/update_note.html?note-id=1" class="far fa-edit fa-2x"></a>
+        <i class="far fa-trash-alt fa-2x"></i>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <h2>Lorem Ipsum</h2>
+      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio laboriosam ipsam cumque at asperiores voluptates veniam unde ipsum corporis facilis. Earum necessitatibus eum sapiente aliquam, laudantium unde veritatis tempora aut aliquid, nihil totam ipsum velit itaque mollitia voluptas, inventore quasi est eaque quod! Nisi quasi consequatur eaque sequi neque. Corrupti.</p>
+    </div>
+
+    <div class="section-images">
+      <figure class="img-wrapper" id="img-one">
+        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=252" alt="">
+        </a>
+      </figure>
+
+      <figure class="img-wrapper" id="img-two">
+        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=253" alt="">
+        </a>
+      </figure>
+
+      <figure class="img-wrapper" id="img-three">
+        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=254" alt="">
+        </a>
+      </figure>
+
+      <figure class="img-wrapper" id="img-four">
+        <a href="https://unsplash.it/1200/768.jpg?image=252" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=252" alt="">
+        </a>
+      </figure>
+
+      <figure class="img-wrapper" id="img-five">
+        <a href="https://unsplash.it/1200/768.jpg?image=253" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=253" alt="">
+        </a>
+      </figure>
+
+      <figure class="img-wrapper" id="img-six">
+        <a href="https://unsplash.it/1200/768.jpg?image=254" data-toggle="lightbox">
+          <img src="https://unsplash.it/600.jpg?image=254" alt="">
+        </a>
+      </figure>
+    </div>
+
+    <div class="section-files">
+      <div class="file-container" id="file-one">
+        <i class="far fa-file-alt fa-3x"></i>
+        <div>lorem-ipsum.pdf</div>
+      </div>
+      <div class="file-container" id="file-two">
+        <i class="far fa-file-alt fa-3x"></i>
+        <div>lorem-ipsum.pdf</div>
+      </div>
+      <div class="file-container" id="file-three">
+        <i class="far fa-file-alt fa-3x"></i>
+        <div>lorem-ipsum.pdf</div>
+      </div>
+      <div class="file-container" id="file-four">
+        <i class="far fa-file-alt fa-3x"></i>
+        <div>lorem-ipsum.pdf</div>
+      </div>
+    </div>
+  </section>
+
+    `
+
+
+  }
+
 
   async function updateSingleNote(){
 
@@ -348,11 +455,13 @@
   }
 
 
-  async function getPathsFromDb(){
+  async function getPathsFromDb(id){
 
-    let result = await fetch("/rest/paths");
+    let result = await fetch("/rest/paths" + id);
     let paths = await result.json();
-    console.log(paths);
+    //console.log(paths);
+
+    return paths;
   }
 
   async function createPathInDb(path){
@@ -381,7 +490,7 @@
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
-    console.log(note);
+    //console.log(note);
     return note;
   }
 
