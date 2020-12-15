@@ -140,6 +140,7 @@
 
 
     console.log(notes)
+    filter();
     renderNotes();
   }
 
@@ -301,7 +302,7 @@
         finishDate: $("#note-end").val()
       }
 
-      updateNoteInDb(updatedNote);
+      await updateNoteInDb(updatedNote);
       window.location.replace("http://localhost:1000/");
     });
 
@@ -309,38 +310,124 @@
 
   function filter(){
 
-    // categories
+    // Show categories
 
     $("#open-navbar").click(async function() {
 
       let categories = await getCategoriesFromDb();
-      let cateElement = $("#filter-categories");
-  
+      let catList = document.querySelector("#filter-categories");
+      catList.innerHTML = "";
   
       for (let i = 0; i < categories.length; i++) {
   
-          cateElement.append(
-  
-            '<li>' + await categories[i].category + '</li>'
-          );
+        category =  '<li class = "navbar-category">' + categories[i].category + '</li>';
+        catList.innerHTML += category;
       }
 
-
-
-
-
+      console.log("The length of catlist when open navbar: " + $(".navbar-category").length);
+      filterCategory();
 
     });
 
 
+    // One category clicked
 
 
+
+
+
+    // All notes clicked
+
+    $("#allnotes-sidebar").click(async function() {
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+
+      let result = await fetch("/rest/notes");
+      notes = await result.json();
+      renderNotes();
+
+    });
+
+    // Checked clicked
+
+    $("#checked-sidebar").click(async function() {
+
+      for (let i = 0; i < notes.length; i++) {
+
+        if(notes[i].checked == false){
+
+          notes.splice(i,1);
+        }
+
+      }
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+
+  async function filterCategory(){
+
+    let categories = await getCategoriesFromDb();
+    let notesTemp = [];
+    let catList = $(".navbar-category");
+
+    for (let i = 0; i < catList.length; i++) {
+
+      $(catList[i]).click(async function() {
+        
+        // console.log("Cat pressed:" + categories[i].category);
+        // console.log("Cat pressed:" + $(catList[i]).text());
+
+        
+        for (let j = 0; j < notes.length; j++) {
+          
+          let catId = notes[j].categoryId;
+          // console.log("ID är: " + catId);
+          let category = await getCategoryByIdFromDb(catId);
+          // console.log("CATEGORY FOR THAT ID: " + await category.category);
+          
+          // if(await category.category != $(catList[i]).text()){
+          //   console.log("CATEGORY FOR THAT ID: " + await category.category);
+          //   console.log($(catList[i]).text());
+          //   console.log("index: " + j);
+          //   notes.splice(j,1);
+          // }
+
+          if(await category.category == $(catList[i]).text()){
+            console.log("CATEGORY FOR THAT ID: " + await category.category);
+            console.log($(catList[i]).text());
+            console.log("index: " + j);
+            notesTemp.push(notes[j]);
+
+          }
+        }
+
+        console.log(notesTemp);
+        notes.length = 0;
+        notes = Array.from(notesTemp);
+
+        exitSideNavBar();
+        $("#all-notes").empty();
+        renderNotes();
+    
+      });
+
+    }
 
 
 
   }
 
+  function exitSideNavBar(){
 
+    $("#side-navbar").css("width", "0");
+    $(".container").removeClass("blur");
+    $(".navbar-wrapper").removeClass("open");
+  }
 
 
 
