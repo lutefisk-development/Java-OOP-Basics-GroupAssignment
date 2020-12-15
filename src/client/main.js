@@ -3,8 +3,6 @@
 // Scoping jquery:
 (function($) {
 
-  // ALL JAVASCRIPT CODE HERE
-
   // opening and closing navbar:
   $("#open-navbar").click(function() {
     $("#side-navbar").css("width", "500px");
@@ -23,19 +21,6 @@
     e.preventDefault();
     $(this).ekkoLightbox();
   });
-
-  // testing querystring
-  // -------------------
-  // function getParameterByName(name, url = window.location.href) {
-  //   name = name.replace(/[\[\]]/g, '\\$&');
-  //   let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-  //       results = regex.exec(url);
-  //   if (!results) return null;
-  //   if (!results[2]) return '';
-  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  // }
-  // console.log(getParameterByName("note-id"));
-
 
   // create note form:
   $("#create-note-form").submit(function(e) {
@@ -220,7 +205,7 @@
         );
       }
 
-      if(currentUrl.includes("note-id=")){
+      if(currentUrl.includes("/update_note.html?note-id=")){
         updateSingleNote();
       }
 
