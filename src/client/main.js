@@ -310,8 +310,13 @@
 
   function filter(){
 
-    // show categories
+    showSideNavBarCategories();
+    filterAllNotes();
+    filterChecked();
+  }
 
+  function showSideNavBarCategories(){
+    
     $("#open-navbar").click(async function() {
 
       let categories = await getCategoriesFromDb();
@@ -320,13 +325,16 @@
   
       for (let i = 0; i < categories.length; i++) {
   
-        category =  '<li>' + categories[i].category + '</li>';
+        category =  '<li class = "navbar-category">' + categories[i].category + '</li>';
         catList.innerHTML += category;
       }
+
+      filterCategory();
+
     });
+  }
 
-
-    // All notes clicked
+  function filterAllNotes(){
 
     $("#allnotes-sidebar").click(async function() {
 
@@ -338,8 +346,9 @@
       renderNotes();
 
     });
+  }
 
-    // Checked clicked
+  function filterChecked(){
 
     $("#checked-sidebar").click(async function() {
 
@@ -356,6 +365,43 @@
       $("#all-notes").empty();
       renderNotes();
     });
+
+  }
+
+
+  async function filterCategory(){
+
+    let categories = await getCategoriesFromDb();
+    let notesTemp = [];
+    let catList = $(".navbar-category");
+
+    for (let i = 0; i < catList.length; i++) {
+
+      $(catList[i]).click(async function() {
+        
+        for (let j = 0; j < notes.length; j++) {
+          
+          let catId = notes[j].categoryId;
+          let category = await getCategoryByIdFromDb(catId);
+
+          if(await category.category == $(catList[i]).text()){
+            notesTemp.push(notes[j]);
+          }
+        }
+
+        console.log(notesTemp);
+
+        if(notesTemp.length>0){
+          notes.length = 0;
+          notes = Array.from(notesTemp);
+        }
+
+        exitSideNavBar();
+        $("#all-notes").empty();
+        renderNotes();
+    
+      });
+    }
   }
 
   function exitSideNavBar(){
@@ -364,8 +410,6 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
-
-
 
   async function getPathsFromDb(){
 
