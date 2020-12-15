@@ -272,17 +272,18 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
     $("#note-end").val(await note.finishDate);
-    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
-
+    
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
-
+    
+    
     for (let i = 0; i < categories.length; i++) {
-
+      
       cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
       categoryList.innerHTML += cat;
     }
+    
+    $("#note-category").prop("selectedIndex",category.id - 1 );
 
 
 
@@ -338,13 +339,18 @@
 
     $("#allnotes-sidebar").click(async function() {
 
-      exitSideNavBar();
-      $("#all-notes").empty();
+      // notes.length = 0;
+      notes = [];
 
+      exitSideNavBar();
+      
       let result = await fetch("/rest/notes");
       notes = await result.json();
-      renderNotes();
 
+      console.log("Längden på notes är: " +notes.length);
+
+      $("#all-notes").empty();
+      renderNotes();
     });
   }
 
@@ -352,13 +358,24 @@
 
     $("#checked-sidebar").click(async function() {
 
+     let notesTemp = [];
+    //  notesTemp.length = 0;
+
       for (let i = 0; i < notes.length; i++) {
 
-        if(notes[i].checked == false){
+        if(notes[i].checked == true){
 
-          notes.splice(i,1);
+          notesTemp.push(notes[i]);
         }
 
+      }
+
+      if(notesTemp != []){
+
+        // notes.length = 0;
+        notes = [];
+        notes = Array.from(notesTemp);
+        notesTemp = [];
       }
 
       exitSideNavBar();
@@ -371,8 +388,13 @@
 
   async function filterCategory(){
 
-    let categories = await getCategoriesFromDb();
+    // Refill of notes[] after a category chosen as filter
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    // let categories = await getCategoriesFromDb();
     let notesTemp = [];
+    // notesTemp.length = 0;
     let catList = $(".navbar-category");
 
     for (let i = 0; i < catList.length; i++) {
@@ -391,9 +413,11 @@
 
         console.log(notesTemp);
 
-        if(notesTemp.length>0){
-          notes.length = 0;
+        if(notesTemp != []){
+          // notes.length = 0;
+          notes = [];
           notes = Array.from(notesTemp);
+          notesTemp = [];
         }
 
         exitSideNavBar();
