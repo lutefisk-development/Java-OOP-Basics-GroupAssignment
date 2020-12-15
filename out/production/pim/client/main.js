@@ -161,11 +161,11 @@
         allNotesElement.append(
           '<article class="checktrue">' +
          '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
-            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+            '<a onclick="renderNoteById()" href="/single_note.html?note-id=' + notes[i].id + '">' +
             notes[i].title +
             '</a>' +
           '</h1>' +
@@ -193,7 +193,7 @@
         allNotesElement.append(
           '<article>' +
          '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category + '</p>' +
+            '<p>' + await category.category.toUpperCase() + '</p>' +
             '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
           '</div>' +
           '<h1>' +
@@ -225,6 +225,46 @@
       }
 
     }
+  }
+
+
+
+
+  async function renderNoteById(){
+
+    let singleNote = document.querySelector("#single-note");
+    let note = await getNoteById(id);
+    console.log(id);
+    
+    singleNote.innerHTML = "";
+    
+    let sNote = `
+    <section id="single-note">
+    <div class="section-header">
+      <div class="dates">
+        <div class="created-date">
+          <p>Created:</p>
+          <p>${note.creationDate}</p>
+        </div>
+        <div class="end-date">
+          <p>Ends:</p>
+          <p>${note.finishDate}</p>
+        </div>
+      </div>
+      
+      <div class="edit-delete">
+        <a href="/update_note.html?note-id=${note.id}" class="far fa-edit fa-2x"></a>
+        <i class="far fa-trash-alt fa-2x"></i>
+      </div>
+    </div>
+    
+    <div class="section-body">
+      <h2>${note.title}</h2>
+      <p>${note.text}</p>
+    </div>
+    `;
+
+    singleNote.innerHTML += sNote;
   }
 
   // event for checking and unchecking notes
