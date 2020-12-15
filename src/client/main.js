@@ -140,8 +140,8 @@
 
 
     console.log(notes)
-    renderNotes();
     filter();
+    renderNotes();
   }
 
   async function renderNotes(){
@@ -310,9 +310,7 @@
 
   function filter(){
 
-
-
-    // categories
+    // show categories
 
     $("#open-navbar").click(async function() {
 
@@ -320,19 +318,37 @@
       let catList = document.querySelector("#filter-categories");
       catList.innerHTML = "";
   
-  
       for (let i = 0; i < categories.length; i++) {
   
         category =  '<li>' + categories[i].category + '</li>';
         catList.innerHTML += category;
       }
+    });
 
+    // checked clicked
 
+    $("#checked-sidebar").click(async function() {
 
+      console.log("Clicked checked sidebar");
+
+      for (let i = 0; i < notes.length; i++) {
+
+        if(notes[i].checked == true){
+
+          notes.splice(i,1);
+        }
+
+      }
+
+      $("#side-navbar").css("width", "0");
+      $(".container").removeClass("blur");
+      $(".navbar-wrapper").removeClass("open");
+
+      $("#all-notes").empty();
+      renderNotes();
 
 
     });
-
 
 
 
