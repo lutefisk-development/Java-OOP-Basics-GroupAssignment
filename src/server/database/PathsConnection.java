@@ -130,9 +130,9 @@ public class PathsConnection {
     }
 
     // gets a path by passing in a id for a note
-    public Path getPathByNoteId(int id) {
-        Path path = null;
-        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = 1";
+    public List<Path> getPathByNoteId(int id) {
+        List<Path> paths = null;
+        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = ?";
 
         try {
             PreparedStatement statement = dbConnection.prepareStatement(query);
@@ -140,7 +140,7 @@ public class PathsConnection {
             ResultSet resultSet = statement.executeQuery();
 
             Path [] resultSetArray = (Path[]) Utils.readResultSetToObject(resultSet, Path[].class);
-            path = resultSetArray[0];
+            paths = List.of(resultSetArray);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -148,7 +148,7 @@ public class PathsConnection {
             e.printStackTrace();
         }
 
-        return path;
+        return paths;
     }
 
     public boolean pathIdExists(Path path){

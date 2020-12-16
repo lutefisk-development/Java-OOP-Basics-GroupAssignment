@@ -37,9 +37,9 @@ public class PathEndpoints {
         });
 
 
-        app.get("/rest/paths",(((request, response) -> {
-
-            List<Path> paths = dbConnection.getPathsConnection().getPaths();
+        app.get("/rest/paths/:id",(((request, response) -> {
+            int id = Integer.parseInt(request.getParam("id"));
+            List<Path> paths = dbConnection.getPathsConnection().getPathByNoteId(id);
             response.json(paths);
         })));
 
