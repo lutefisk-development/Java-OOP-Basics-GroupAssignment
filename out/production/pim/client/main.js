@@ -3,6 +3,8 @@
 // Scoping jquery:
 (function($) {
 
+  // ALL JAVASCRIPT CODE HERE
+
   // opening and closing navbar:
   $("#open-navbar").click(function() {
     $("#side-navbar").css("width", "500px");
@@ -21,6 +23,19 @@
     e.preventDefault();
     $(this).ekkoLightbox();
   });
+
+  // testing querystring
+  // -------------------
+  // function getParameterByName(name, url = window.location.href) {
+  //   name = name.replace(/[\[\]]/g, '\\$&');
+  //   let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+  //       results = regex.exec(url);
+  //   if (!results) return null;
+  //   if (!results[2]) return '';
+  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  // }
+  // console.log(getParameterByName("note-id"));
+
 
   // create note form:
   $("#create-note-form").submit(function(e) {
@@ -118,13 +133,15 @@
 
   async function getAllNotes(){
 
+    console.log("teeest100");
+
     console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
     console.log("Efter await");
 
-
     console.log(notes)
+    filter();
     renderNotes();
   }
 
@@ -205,7 +222,7 @@
         );
       }
 
-      if(currentUrl.includes("/update_note.html?note-id=")){
+      if(currentUrl.includes("note-id=")){
         updateSingleNote();
       }
 
@@ -241,7 +258,8 @@
     });
 
     console.log(res);
-    getAllNotes()
+    renderNotes();
+    // getAllNotes();
   }
 
 
@@ -256,17 +274,18 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
     $("#note-end").val(await note.finishDate);
-    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
-
+    
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
-
+    
+    
     for (let i = 0; i < categories.length; i++) {
-
+      
       cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
       categoryList.innerHTML += cat;
     }
+    
+    $("#note-category").prop("selectedIndex",category.id - 1 );
 
 
 
@@ -286,156 +305,138 @@
         finishDate: $("#note-end").val()
       }
 
-      updateNoteInDb(updatedNote);
+      await updateNoteInDb(updatedNote);
       window.location.replace("http://localhost:1000/");
     });
 
   }
 
-    // show single note by id
-    if(currentUrl.includes("/single_note.html?note-id=")) {
-      let id = currentUrl.split("=")[1];
-      showSingleNoteById(id);
-    }
+  function filter(){
 
-    async function showSingleNoteById(id) {
-      let note = await getNoteById(id);
-      let paths = await getPathsFromDb(id);
+    showSideNavBarCategories();
+    filterAllNotes();
+    filterChecked();
+  }
 
-          // checks if there is a end date, if not set default message
-    if(note.finishDate == "") {
-      note.finishDate = "No date set"
-    }
+  function showSideNavBarCategories(){
+    
+    $("#open-navbar").click(async function() {
 
-    let imgs = [];
-    let files = [];
-
-    // loops through paths and divids up files and images into other arrays
-    for(let i = 0; i < paths.length; i++) {
-
-      if(paths[i].fileType == "img") {
-        imgs.push(paths[i]);
-      } else {
-        files.push(paths[i]);
+      let categories = await getCategoriesFromDb();
+      let catList = document.querySelector("#filter-categories");
+      catList.innerHTML = "";
+  
+      for (let i = 0; i < categories.length; i++) {
+  
+        category =  '<li class = "navbar-category">' + categories[i].category + '</li>';
+        catList.innerHTML += category;
       }
 
-    }
+      filterCategory();
 
-    if(imgs.length > 0) {
+    });
+  }
 
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>' +
-        '<div class="section-images"></div>'
-      );
+  function filterAllNotes(){
 
-    } else if(files.length > 0) {
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>' +
-        '<div class="section-files"></div>'
-      );
+    $("#allnotes-sidebar").click(async function() {
+
+      notes = [];
+
+      exitSideNavBar();
+      
+      let result = await fetch("/rest/notes");
+      notes = await result.json();
+
+      console.log("Längden på notes är: " +notes.length);
+
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+  function filterChecked(){
+
+    $("#checked-sidebar").click(async function() {
+
+     let notesTemp = [];
+
+      for (let i = 0; i < notes.length; i++) {
+
+        if(notes[i].checked == true){
+
+          notesTemp.push(notes[i]);
+        }
+
+      }
+
+      if(notesTemp != []){
+
+        notes = [];
+        notes = Array.from(notesTemp);
+        notesTemp = [];
+      }
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+
+  async function filterCategory(){
+
+    // Refill notes[] again after a filter for category,
+    // so alla notes ares available for a new filter of category
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    let notesTemp = [];
+    let catList = $(".navbar-category");
+
+    for (let i = 0; i < catList.length; i++) {
+
+      $(catList[i]).click(async function() {
+        
+        for (let j = 0; j < notes.length; j++) {
+          
+          let catId = notes[j].categoryId;
+          let category = await getCategoryByIdFromDb(catId);
+
+          if(await category.category == $(catList[i]).text()){
+            notesTemp.push(notes[j]);
+          }
+        }
+
+        console.log(notesTemp);
+
+        if(notesTemp != []){
+          notes = [];
+          notes = Array.from(notesTemp);
+          notesTemp = [];
+        }
+
+        exitSideNavBar();
+        $("#all-notes").empty();
+        renderNotes();
     
-    } else {
-
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>'
-      );
-    
+      });
     }
+  }
 
-      // append imgages to .section-images
-      if(imgs.length > 0) {
-        for(let i = 0; i < imgs.length; i++) {
-          $(".section-images").append(
-            '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
-              '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
-                '<img src="'+ imgs[i].path +'" alt="">' +
-              '</a>' +
-            '</figure>'
-          );
-        };
-      };
-  
-      // append files to .section-files
-      if(files.length > 0) {
-        for(let i = 0; i < files.length; i++) {
-          $(".section-files").append(
-            '<div class="file-container" id="file-'+ files[i].id +'">' +
-              '<i class="far fa-file-alt fa-3x"></i>' +
-              '<div>'+ files[i].path +'</div>' +
-            '</div>'
-          );
-        };
-      };
+  function exitSideNavBar(){
 
+    $("#side-navbar").css("width", "0");
+    $(".container").removeClass("blur");
+    $(".navbar-wrapper").removeClass("open");
+  }
 
+  async function getPathsFromDb(){
 
-    }
-
-
-  async function getPathsFromDb(id){
-
-    let result = await fetch("/rest/paths/" +id);
+    let result = await fetch("/rest/paths");
     let paths = await result.json();
     console.log(paths);
-    
-    return paths;
   }
 
   async function createPathInDb(path){
