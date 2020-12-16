@@ -399,10 +399,12 @@
           '<h2>'+ note.title +'</h2>' +
           '<p>'+ note.text +'</p>' +
         '</div>' +
-        '<div class="section-images"></div>'
+        '<div class="section-images"></div>' +
+        '<div class="section-files"></div>'
       );
 
-    } else if(files.length > 0) {
+    } else {
+
       $("#single-note").append(
         '<div class="section-header">' +
           '<div class="dates">' +
@@ -426,62 +428,33 @@
         '</div>' +
         '<div class="section-files"></div>'
       );
-    
-    } else {
+    };
 
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>'
-      );
-    
-    }
-
-      // append imgages to .section-images
-      if(imgs.length > 0) {
-        for(let i = 0; i < imgs.length; i++) {
-          $(".section-images").append(
-            '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
-              '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
-                '<img src="'+ imgs[i].path +'" alt="">' +
-              '</a>' +
-            '</figure>'
-          );
-        };
+    // append imgages to .section-images
+    if(imgs.length > 0) {
+      for(let i = 0; i < imgs.length; i++) {
+        $(".section-images").append(
+          '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
+            '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
+              '<img src="'+ imgs[i].path +'" alt="">' +
+            '</a>' +
+          '</figure>'
+        );
       };
-  
-      // append files to .section-files
-      if(files.length > 0) {
-        for(let i = 0; i < files.length; i++) {
-          $(".section-files").append(
-            '<div class="file-container" id="file-'+ files[i].id +'">' +
-              '<i class="far fa-file-alt fa-3x"></i>' +
-              '<div>'+ files[i].path +'</div>' +
-            '</div>'
-          );
-        };
+    };
+
+    // append files to .section-files
+    if(files.length > 0) {
+      for(let i = 0; i < files.length; i++) {
+        $(".section-files").append(
+          '<div class="file-container" id="file-'+ files[i].id +'">' +
+            '<i class="far fa-file-alt fa-3x"></i>' +
+            '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
+          '</div>'
+        );
       };
-
-
-
-    }
+    };
+  };
 
 
   async function getPathsFromDb(id){
@@ -489,7 +462,7 @@
     let result = await fetch("/rest/paths/" +id);
     let paths = await result.json();
     console.log(paths);
-    
+
     return paths;
   }
 
