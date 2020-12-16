@@ -32,25 +32,29 @@
     handleFormSubmit();
   });
 
-  // update note form:
-  $("#update-note-form").submit(function(e) {
-
-    // stop form from submitting.
-    e.preventDefault();
-
-    // handling the form data
-    //handleFormSubmit();
-  })
-
   const handleFormSubmit = async () => {
     // getting file if user has added one
     let fileUrl;
+    let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
+
+      console.log($fileArray);
+
       let formData = new FormData();
 
       // adding the file to formData
       for(let file of $fileArray) {
+
+        // if it's a png or jpeg file, set variable to "img"
+        if(file.type.split("/")[1] == "png" || file.type.split("/")[1] == "jpeg") {
+          fileType = "img"
+        }
+
+        // if it's pdf or txt file, set variable to "file"
+        if(file.type.split("/")[1] == "pdf" || file.type.split("/")[1] == "plain") {
+          fileType = "file"
+        }
         formData.append('files', file, file.name);
       }
 
