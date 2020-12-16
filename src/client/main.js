@@ -215,6 +215,7 @@
       }
 
     }
+  }
 
   // event for checking and unchecking notes
   $(document).ready(function(){
