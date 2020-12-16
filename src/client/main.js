@@ -215,7 +215,6 @@
       }
 
     }
-  }
 
   // event for checking and unchecking notes
   $(document).ready(function(){
@@ -471,12 +470,6 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
-    // show single note by id
-    if(currentUrl.includes("/single_note.html?note-id=")) {
-      let id = currentUrl.split("=")[1];
-      showSingleNoteById(id);
-    }
-
 
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
@@ -626,14 +619,9 @@
   }
 
 
-
-  // $("#deleteNoteByIdButton").click(function() {
-  //   deleteNoteById();
-  // });
-
   $(document).ready(function() {
 
-    $(document).on('click', '#deleteNoteByIdButton', function(id) {
+    $(document).on('click', '#deleteNoteByIdButton', function() {
 
       let url = window.location.href;
       let urlArray = url.split("=");
@@ -641,18 +629,17 @@
       console.log(currentNoteId)
 
       deleteNoteById(currentNoteId)
-      window.location.replace("http://localhost:1000/");
+
     });
   });
 
   async function deleteNoteById(id){
-    let result = await fetch("/rest/notes/"+id, {
+    let result = await fetch("/rest/notes/" + id, {
       method: "DELETE",
-      body: JSON.stringify(id)
-  });
+    });
 
-  }
-
+    window.location.replace("http://localhost:1000/");
+  };
 
   async function getCategoriesFromDb(){
 
