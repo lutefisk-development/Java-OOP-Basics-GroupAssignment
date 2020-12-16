@@ -417,90 +417,12 @@
         notesTemp = [];
       }
 
-
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>' +
-        '<div class="section-images"></div>'
-      );
-
-    } else if(files.length > 0) {
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>' +
-        '<div class="section-files"></div>'
-      );
-    
-    } else {
-
-      $("#single-note").append(
-        '<div class="section-header">' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>'+ note.creationDate +'</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>'+ note.finishDate +'</p>' +
-            '</div>' +
-          '</div>'+
-          '<div class="edit-delete">' +
-            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
-          '</div>' +
-        '</div>'+
-        '<div class="section-body">' +
-          '<h2>'+ note.title +'</h2>' +
-          '<p>'+ note.text +'</p>' +
-        '</div>'
-      );
-    
-    }
-
       exitSideNavBar();
       $("#all-notes").empty();
       renderNotes();
     });
 
   }
-
 
 
   async function filterCategory(){
@@ -549,27 +471,6 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
-    // show single note by id
-    if(currentUrl.includes("/single_note.html?note-id=")) {
-      let id = currentUrl.split("=")[1];
-      showSingleNoteById(id);
-    }
-
-    // setting path variable
-    let newPath = {
-      path: fileUrl ? fileUrl : null,
-      noteId: id,
-      fileType: fileType
-    }
-
-    //only make a new path in db if the user actually has inserted a file
-    if(newPath.path != null) {
-      let pathResult = await fetch("/rest/paths", {
-        method: "POST",
-        body: JSON.stringify(newPath),
-      });
-    }
-
 
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
@@ -614,7 +515,7 @@
           '</div>'+
           '<div class="edit-delete">' +
             '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
           '</div>' +
         '</div>'+
         '<div class="section-body">' +
@@ -641,7 +542,7 @@
           '</div>'+
           '<div class="edit-delete">' +
             '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
-            '<i class="far fa-trash-alt fa-2x"></i>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
           '</div>' +
         '</div>'+
         '<div class="section-body">' +
@@ -718,41 +619,29 @@
     return note;
   }
 
-<<<<<<< HEAD
-  $("#deleteNoteByIdButton").click(function() {
-    deleteNoteById();
-=======
-
-
-  // $("#deleteNoteByIdButton").click(function() {
-  //   deleteNoteById();
->>>>>>> dev
-
-  // });
 
   $(document).ready(function() {
 
-    $(document).on('click', '#deleteNoteByIdButton', function(id) {
-      
+    $(document).on('click', '#deleteNoteByIdButton', function() {
+
       let url = window.location.href;
       let urlArray = url.split("=");
       let currentNoteId = urlArray[1];
       console.log(currentNoteId)
-      
+
       deleteNoteById(currentNoteId)
-      window.location.replace("http://localhost:1000/");
+
     });
   });
-  
-  async function deleteNoteById(id){
-    let result = await fetch("/rest/notes/"+id, {
-      method: "DELETE",
-      body: JSON.stringify(id)
-  });
 
-  }
-  
-  
+  async function deleteNoteById(id){
+    let result = await fetch("/rest/notes/" + id, {
+      method: "DELETE",
+    });
+
+    window.location.replace("http://localhost:1000/");
+  };
+
   async function getCategoriesFromDb(){
 
     let result = await fetch("/rest/categories");
