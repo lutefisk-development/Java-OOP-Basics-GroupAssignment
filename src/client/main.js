@@ -138,7 +138,6 @@
     notes = await result.json();
     console.log("Efter await");
 
-
     console.log(notes)
     filter();
     renderNotes();
@@ -257,7 +256,13 @@
     });
 
     console.log(res);
-    getAllNotes()
+
+    // Get all notes and render again.
+    // Don't call getAllNotes() since filter is there
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    renderNotes();
   }
 
 
@@ -303,7 +308,7 @@
         finishDate: $("#note-end").val()
       }
 
-      updateNoteInDb(updatedNote);
+      await updateNoteInDb(updatedNote);
       window.location.replace("http://localhost:1000/");
     });
 
@@ -339,7 +344,6 @@
 
     $("#allnotes-sidebar").click(async function() {
 
-      // notes.length = 0;
       notes = [];
 
       exitSideNavBar();
@@ -359,7 +363,6 @@
     $("#checked-sidebar").click(async function() {
 
      let notesTemp = [];
-    //  notesTemp.length = 0;
 
       for (let i = 0; i < notes.length; i++) {
 
@@ -372,7 +375,6 @@
 
       if(notesTemp != []){
 
-        // notes.length = 0;
         notes = [];
         notes = Array.from(notesTemp);
         notesTemp = [];
@@ -388,13 +390,12 @@
 
   async function filterCategory(){
 
-    // Refill of notes[] after a category chosen as filter
+    // Refill notes[] again after a filter for category,
+    // so alla notes ares available for a new filter of category
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    // let categories = await getCategoriesFromDb();
     let notesTemp = [];
-    // notesTemp.length = 0;
     let catList = $(".navbar-category");
 
     for (let i = 0; i < catList.length; i++) {
@@ -414,7 +415,6 @@
         console.log(notesTemp);
 
         if(notesTemp != []){
-          // notes.length = 0;
           notes = [];
           notes = Array.from(notesTemp);
           notesTemp = [];
