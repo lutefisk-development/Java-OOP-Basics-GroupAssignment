@@ -271,11 +271,12 @@
       cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
       categoryList.innerHTML += cat;
     }
+  }
 
+  $(document).ready(function() {
+    $(document).on('submit', '#update-note-form', async function(e) {
 
-
-    $("#update-button").click(async function(){
-
+      e.preventDefault();
       let id = currentUrl.split("note-id=")[1];
       let note = await getNoteById(id);
 
@@ -290,40 +291,90 @@
         finishDate: $("#note-end").val()
       }
 
-      updateNoteInDb(updatedNote);
+      await updateNoteInDb(updatedNote);
+      await addFileToNote(id);
       window.location.replace("http://localhost:1000/");
     });
+  });
 
+  const addFileToNote = async id => {
+    // getting file if user has added one
+    let fileUrl;
+    let fileType = "";
+    if($("#note-file").prop('files').length > 0) {
+      let $fileArray = $("#note-file").prop('files');
+
+      console.log($fileArray);
+
+      let formData = new FormData();
+
+      // adding the file to formData
+      for(let file of $fileArray) {
+
+        // if it's a png or jpeg file, set variable to "img"
+        if(file.type.split("/")[1] == "png" || file.type.split("/")[1] == "jpeg") {
+          fileType = "img"
+        }
+
+        // if it's pdf or txt file, set variable to "file"
+        if(file.type.split("/")[1] == "pdf" || file.type.split("/")[1] == "plain") {
+          fileType = "file"
+        }
+        formData.append('files', file, file.name);
+      }
+
+      // sending post request to endpoint for storing the file
+      let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // get path
+      fileUrl = await uploadResult.text();
+    }
+
+    // setting path variable
+    let newPath = {
+      path: fileUrl ? fileUrl : null,
+      noteId: id,
+      fileType: fileType
+    }
+
+    //only make a new path in db if the user actually has inserted a file
+    if(newPath.path != null) {
+      let pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
   }
 
-    // show single note by id
-    if(currentUrl.includes("/single_note.html?note-id=")) {
-      let id = currentUrl.split("=")[1];
-      showSingleNoteById(id);
-    }
+  // show single note by id
+  if(currentUrl.includes("/single_note.html?note-id=")) {
+    let id = currentUrl.split("=")[1];
+    showSingleNoteById(id);
+  };
 
-    async function showSingleNoteById(id) {
-      let note = await getNoteById(id);
-      let paths = await getPathsFromDb(id);
+  async function showSingleNoteById(id) {
+    let note = await getNoteById(id);
+    let paths = await getPathsFromDb(id);
 
-          // checks if there is a end date, if not set default message
+    // checks if there is a end date, if not set default message
     if(note.finishDate == "") {
       note.finishDate = "No date set"
-    }
+    };
 
     let imgs = [];
     let files = [];
 
     // loops through paths and divids up files and images into other arrays
     for(let i = 0; i < paths.length; i++) {
-
       if(paths[i].fileType == "img") {
         imgs.push(paths[i]);
       } else {
         files.push(paths[i]);
-      }
-
-    }
+      };
+    };
 
     if(imgs.length > 0) {
 
