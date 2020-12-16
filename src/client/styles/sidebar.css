@@ -37,6 +37,19 @@ nav.side-navbar .navbar-wrapper {
   transition: opacity 150ms ease-in-out;
 }
 
+nav.side-navbar .navbar-wrapper .filter-wrapper,
+nav.side-navbar .navbar-wrapper .sort-wrapper{
+  width: 50%;
+}
+
+nav.side-navbar .navbar-wrapper .filter-wrapper ul li {
+  cursor: pointer;
+}
+
+nav.side-navbar .navbar-wrapper .filter-wrapper ul li:hover {
+  color:  rgb(0, 26, 255);
+}
+
 nav.side-navbar .navbar-wrapper.open {
   opacity: 1;
   transition: opacity 250ms ease-in-out 250ms;
