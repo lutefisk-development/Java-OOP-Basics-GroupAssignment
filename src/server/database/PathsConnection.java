@@ -5,6 +5,7 @@ import express.utils.Utils;
 import org.apache.commons.fileupload.FileItem;
 import server.model.Path;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -21,18 +22,18 @@ public class PathsConnection {
         this.dbConnection = dbConnection;
     }
 
-    public String uploadImage(FileItem image) {
+    public String uploadFile(FileItem file) {
         // uploads folder in client directory is accessible from localhost
         // because the entire client folder gets served through middleware.
 
         // get filename
-        String imgUrl = "/uploads/" + image.getName();
+        String url = File.separator + "uploads" + File.separator + file.getName();
 
         // open outputstream with path to uploads folder in client directory
-        try (var os = new FileOutputStream(Paths.get("src/client" + imgUrl).toString())) {
+        try (var os = new FileOutputStream(Paths.get("src/client" + url).toString())) {
 
             // get required byte[] array to save to a file with file.get()
-            os.write(image.get());
+            os.write(file.get());
         } catch(Exception e) {
             e.printStackTrace();
 
@@ -40,7 +41,7 @@ public class PathsConnection {
             return null;
         }
 
-        return imgUrl;
+        return url;
     }
 
     public List<Path> getPaths(){
@@ -130,8 +131,8 @@ public class PathsConnection {
     }
 
     // gets a path by passing in a id for a note
-    public Path getPathByNoteId(int id) {
-        Path path = null;
+    public List<Path> getPathByNoteId(int id) {
+        List<Path> paths = null;
         String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = ?";
 
         try {
@@ -140,7 +141,7 @@ public class PathsConnection {
             ResultSet resultSet = statement.executeQuery();
 
             Path [] resultSetArray = (Path[]) Utils.readResultSetToObject(resultSet, Path[].class);
-            path = resultSetArray[0];
+            paths = List.of(resultSetArray);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -148,7 +149,7 @@ public class PathsConnection {
             e.printStackTrace();
         }
 
-        return path;
+        return paths;
     }
 
     public boolean pathIdExists(Path path){

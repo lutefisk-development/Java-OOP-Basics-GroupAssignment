@@ -43,6 +43,10 @@ header .add-note:hover .fa-plus {
 /* /HEADER */
 
 /* FRONT PAGE */
+.container {
+  transition: blur 250ms ease-in-out;
+}
+
 .container.blur {
   filter: blur(3.5px);
 }

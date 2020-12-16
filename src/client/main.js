@@ -3,8 +3,6 @@
 // Scoping jquery:
 (function($) {
 
-  // ALL JAVASCRIPT CODE HERE
-
   // opening and closing navbar:
   $("#open-navbar").click(function() {
     $("#side-navbar").css("width", "500px");
@@ -24,19 +22,6 @@
     $(this).ekkoLightbox();
   });
 
-  // testing querystring
-  // -------------------
-  // function getParameterByName(name, url = window.location.href) {
-  //   name = name.replace(/[\[\]]/g, '\\$&');
-  //   let regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-  //       results = regex.exec(url);
-  //   if (!results) return null;
-  //   if (!results[2]) return '';
-  //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  // }
-  // console.log(getParameterByName("note-id"));
-
-
   // create note form:
   $("#create-note-form").submit(function(e) {
 
@@ -47,25 +32,29 @@
     handleFormSubmit();
   });
 
-  // update note form:
-  $("#update-note-form").submit(function(e) {
-
-    // stop form from submitting.
-    e.preventDefault();
-
-    // handling the form data
-    //handleFormSubmit();
-  })
-
   const handleFormSubmit = async () => {
     // getting file if user has added one
     let fileUrl;
+    let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
+
+      console.log($fileArray);
+
       let formData = new FormData();
 
       // adding the file to formData
       for(let file of $fileArray) {
+
+        // if it's a png or jpeg file, set variable to "img"
+        if(file.type.split("/")[1] == "png" || file.type.split("/")[1] == "jpeg") {
+          fileType = "img"
+        }
+
+        // if it's pdf or txt file, set variable to "file"
+        if(file.type.split("/")[1] == "pdf" || file.type.split("/")[1] == "plain") {
+          fileType = "file"
+        }
         formData.append('files', file, file.name);
       }
 
@@ -107,7 +96,7 @@
     let newPath = {
       path: fileUrl ? fileUrl : null,
       noteId: newNoteFromDb.id,
-      fileType: "img"
+      fileType: fileType
     }
 
     //only make a new path in db if the user actually has inserted a file
@@ -123,21 +112,22 @@
   }
 
   // Getting and render the notes
-  console.log("Början på koden");
-
   let notes = [];
-  getAllNotes();
+  prepareFrontPage();
 
   let currentUrl = window.location.href;
   console.log(currentUrl);
 
+  function prepareFrontPage(){
+
+    getAllNotes();
+    filter();
+  }
+
   async function getAllNotes(){
 
-    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
-    console.log("Efter await");
-
 
     console.log(notes)
     renderNotes();
@@ -220,7 +210,7 @@
         );
       }
 
-      if(currentUrl.includes("note-id=")){
+      if(currentUrl.includes("/update_note.html?note-id=")){
         updateSingleNote();
       }
 
@@ -256,9 +246,9 @@
     });
 
     console.log(res);
-    getAllNotes()
-  }
 
+    getAllNotes();
+  }
 
   async function updateSingleNote(){
 
@@ -271,7 +261,6 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
     $("#note-end").val(await note.finishDate);
-    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
 
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
@@ -283,10 +272,13 @@
       categoryList.innerHTML += cat;
     }
 
+    $("#note-category").prop("selectedIndex",category.id - 1 );
+  }
 
+  $(document).ready(function() {
+    $(document).on('submit', '#update-note-form', async function(e) {
 
-    $("#update-button").click(async function(){
-
+      e.preventDefault();
       let id = currentUrl.split("note-id=")[1];
       let note = await getNoteById(id);
 
@@ -301,18 +293,300 @@
         finishDate: $("#note-end").val()
       }
 
-      updateNoteInDb(updatedNote);
+      await updateNoteInDb(updatedNote);
+      await addFileToNote(id);
       window.location.replace("http://localhost:1000/");
+    });
+  });
+
+  const addFileToNote = async id => {
+    // getting file if user has added one
+    let fileUrl;
+    let fileType = "";
+    if($("#note-file").prop('files').length > 0) {
+      let $fileArray = $("#note-file").prop('files');
+
+      console.log($fileArray);
+
+      let formData = new FormData();
+
+      // adding the file to formData
+      for(let file of $fileArray) {
+
+        // if it's a png or jpeg file, set variable to "img"
+        if(file.type.split("/")[1] == "png" || file.type.split("/")[1] == "jpeg") {
+          fileType = "img"
+        }
+
+        // if it's pdf or txt file, set variable to "file"
+        if(file.type.split("/")[1] == "pdf" || file.type.split("/")[1] == "plain") {
+          fileType = "file"
+        }
+        formData.append('files', file, file.name);
+      }
+
+      // sending post request to endpoint for storing the file
+      let uploadResult = await fetch('/rest/file-upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      // get path
+      fileUrl = await uploadResult.text();
+    }
+
+     // setting path variable
+     let newPath = {
+      path: fileUrl ? fileUrl : null,
+      noteId: id,
+      fileType: fileType
+    }
+
+    //only make a new path in db if the user actually has inserted a file
+    if(newPath.path != null) {
+      let pathResult = await fetch("/rest/paths", {
+        method: "POST",
+        body: JSON.stringify(newPath),
+      });
+    }
+  }
+
+  function filter(){
+
+    showSideNavBarCategories();
+    filterAllNotes();
+    filterChecked();
+  }
+
+  function showSideNavBarCategories(){
+
+    $("#open-navbar").click(async function() {
+
+      let categories = await getCategoriesFromDb();
+      let catList = document.querySelector("#filter-categories");
+      catList.innerHTML = "";
+
+      for (let i = 0; i < categories.length; i++) {
+
+        category =  '<li class = "navbar-category">' + categories[i].category + '</li>';
+        catList.innerHTML += category;
+      }
+
+      filterCategory();
+
+    });
+  }
+
+  function filterAllNotes(){
+
+    $("#allnotes-sidebar").click(async function() {
+
+      notes = [];
+
+      exitSideNavBar();
+
+      let result = await fetch("/rest/notes");
+      notes = await result.json();
+
+      console.log("Längden på notes är: " +notes.length);
+
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+  function filterChecked(){
+
+    $("#checked-sidebar").click(async function() {
+
+     let notesTemp = [];
+
+      for (let i = 0; i < notes.length; i++) {
+
+        if(notes[i].checked == true){
+
+          notesTemp.push(notes[i]);
+        }
+
+      }
+
+      if(notesTemp != []){
+
+        notes = [];
+        notes = Array.from(notesTemp);
+        notesTemp = [];
+      }
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
     });
 
   }
 
 
-  async function getPathsFromDb(){
+  async function filterCategory(){
 
-    let result = await fetch("/rest/paths");
+    // Refill notes[] again after a filter for category,
+    // so alla notes ares available for a new filter of category
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    let notesTemp = [];
+    let catList = $(".navbar-category");
+
+    for (let i = 0; i < catList.length; i++) {
+
+      $(catList[i]).click(async function() {
+
+        for (let j = 0; j < notes.length; j++) {
+
+          let catId = notes[j].categoryId;
+          let category = await getCategoryByIdFromDb(catId);
+
+          if(await category.category == $(catList[i]).text()){
+            notesTemp.push(notes[j]);
+          }
+        }
+
+        console.log(notesTemp);
+
+        if(notesTemp != []){
+          notes = [];
+          notes = Array.from(notesTemp);
+          notesTemp = [];
+        }
+
+        exitSideNavBar();
+        $("#all-notes").empty();
+        renderNotes();
+
+      });
+    }
+  }
+
+  function exitSideNavBar(){
+
+    $("#side-navbar").css("width", "0");
+    $(".container").removeClass("blur");
+    $(".navbar-wrapper").removeClass("open");
+  }
+
+  // show single note by id
+  if(currentUrl.includes("/single_note.html?note-id=")) {
+    let id = currentUrl.split("=")[1];
+    showSingleNoteById(id);
+  };
+
+  async function showSingleNoteById(id) {
+    let note = await getNoteById(id);
+    let paths = await getPathsFromDb(id);
+
+    // checks if there is a end date, if not set default message
+    if(note.finishDate == "") {
+      note.finishDate = "No date set"
+    };
+
+    let imgs = [];
+    let files = [];
+
+    // loops through paths and divids up files and images into other arrays
+    for(let i = 0; i < paths.length; i++) {
+      if(paths[i].fileType == "img") {
+        imgs.push(paths[i]);
+      } else {
+        files.push(paths[i]);
+      };
+    };
+
+    if(imgs.length > 0) {
+
+      $("#single-note").append(
+        '<div class="section-header">' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>'+ note.creationDate +'</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>'+ note.finishDate +'</p>' +
+            '</div>' +
+          '</div>'+
+          '<div class="edit-delete">' +
+            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
+          '</div>' +
+        '</div>'+
+        '<div class="section-body">' +
+          '<h2>'+ note.title +'</h2>' +
+          '<p>'+ note.text +'</p>' +
+        '</div>' +
+        '<div class="section-images"></div>' +
+        '<div class="section-files"></div>'
+      );
+
+    } else {
+
+      $("#single-note").append(
+        '<div class="section-header">' +
+          '<div class="dates">' +
+            '<div class="created-date">' +
+              '<p>Created:</p>' +
+              '<p>'+ note.creationDate +'</p>' +
+            '</div>' +
+            '<div class="end-date">' +
+              '<p>Ends:</p>' +
+              '<p>'+ note.finishDate +'</p>' +
+            '</div>' +
+          '</div>'+
+          '<div class="edit-delete">' +
+            '<a href="/update_note.html?note-id='+ note.id +'" class="far fa-edit fa-2x"></a>' +
+            '<i id="deleteNoteByIdButton" class="far fa-trash-alt fa-2x"></i>' +
+          '</div>' +
+        '</div>'+
+        '<div class="section-body">' +
+          '<h2>'+ note.title +'</h2>' +
+          '<p>'+ note.text +'</p>' +
+        '</div>' +
+        '<div class="section-files"></div>'
+      );
+    };
+
+    // append imgages to .section-images
+    if(imgs.length > 0) {
+      for(let i = 0; i < imgs.length; i++) {
+        $(".section-images").append(
+          '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
+            '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
+              '<img src="'+ imgs[i].path +'" alt="">' +
+            '</a>' +
+          '</figure>'
+        );
+      };
+    };
+
+    // append files to .section-files
+    if(files.length > 0) {
+      for(let i = 0; i < files.length; i++) {
+        $(".section-files").append(
+          '<div class="file-container" id="file-'+ files[i].id +'">' +
+            '<i class="far fa-file-alt fa-3x"></i>' +
+            '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
+          '</div>'
+        );
+      };
+    };
+  };
+
+
+  async function getPathsFromDb(id){
+
+    let result = await fetch("/rest/paths/" +id);
     let paths = await result.json();
     console.log(paths);
+
+    return paths;
   }
 
   async function createPathInDb(path){
@@ -346,20 +620,27 @@
   }
 
 
+  $(document).ready(function() {
 
-  $("#deleteNoteByIdButton").click(function() {
-    deleteNoteById();
+    $(document).on('click', '#deleteNoteByIdButton', function() {
 
+      let url = window.location.href;
+      let urlArray = url.split("=");
+      let currentNoteId = urlArray[1];
+      console.log(currentNoteId)
+
+      deleteNoteById(currentNoteId)
+
+    });
   });
 
   async function deleteNoteById(id){
-    let result = await fetch("/rest/notes/id", {
+    let result = await fetch("/rest/notes/" + id, {
       method: "DELETE",
-      body: JSON.stringify(id)
     });
 
-  }
-
+    window.location.replace("http://localhost:1000/");
+  };
 
   async function getCategoriesFromDb(){
 
@@ -397,9 +678,5 @@
 
     console.log(await result.text());
   }
-
-
-
-  console.log("Slutet på koden");
 
 })(jQuery);

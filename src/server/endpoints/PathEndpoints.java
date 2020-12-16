@@ -20,26 +20,26 @@ public class PathEndpoints {
 
         // Endpoint for creating a path based on the file in request
         app.post("/rest/file-upload", (req,res) -> {
-            String imgUrl = null;
+            String url = null;
 
             // get file from formData
             try {
                 List<FileItem> files = req.getFormData("files");
-                imgUrl = dbConnection.getPathsConnection().uploadImage(files.get(0));
+                url = dbConnection.getPathsConnection().uploadFile(files.get(0));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (FileUploadException e) {
                 e.printStackTrace();
             }
             
-            // return "/uploads/image-name.jpg"
-            res.send(imgUrl);
+            // return "/uploads/filename.something"
+            res.send(url);
         });
 
 
-        app.get("/rest/paths",(((request, response) -> {
-
-            List<Path> paths = dbConnection.getPathsConnection().getPaths();
+        app.get("/rest/paths/:id",(((request, response) -> {
+            int id = Integer.parseInt(request.getParam("id"));
+            List<Path> paths = dbConnection.getPathsConnection().getPathByNoteId(id);
             response.json(paths);
         })));
 

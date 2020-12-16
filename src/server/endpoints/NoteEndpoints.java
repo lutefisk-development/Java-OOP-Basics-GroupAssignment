@@ -66,7 +66,7 @@ public class NoteEndpoints {
         app.delete("/rest/notes/:id", (req, res) -> {
             int id = Integer.parseInt(req.getParam("id"));
             dbConnection.getNotesConnection().deleteNoteById(id);
-
+            res.send("Note deleted");
         });
 
         app.put("/rest/notes/:id", (req, res) -> {
