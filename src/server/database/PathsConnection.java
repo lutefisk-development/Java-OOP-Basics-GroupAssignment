@@ -30,7 +30,7 @@ public class PathsConnection {
         String url = File.separator + "uploads" + File.separator + file.getName();
 
         // open outputstream with path to uploads folder in client directory
-        try (var os = new FileOutputStream(Paths.get("src/client" + url).toString())) {
+        try (var os = new FileOutputStream(Paths.get("src"+ File.separator +"client" + url).toString())) {
 
             // get required byte[] array to save to a file with file.get()
             os.write(file.get());
