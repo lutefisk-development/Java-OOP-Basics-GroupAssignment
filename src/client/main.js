@@ -96,7 +96,7 @@
     let newPath = {
       path: fileUrl ? fileUrl : null,
       noteId: newNoteFromDb.id,
-      fileType: "img"
+      fileType: fileType
     }
 
     //only make a new path in db if the user actually has inserted a file
