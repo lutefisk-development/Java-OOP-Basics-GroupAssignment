@@ -62,6 +62,7 @@ section#single-note .section-header .edit-delete a:hover {
 }
 
 section#single-note .section-header .edit-delete .fa-trash-alt:hover {
+  cursor: pointer;
   color: rgb(255, 0, 0);
 }
 

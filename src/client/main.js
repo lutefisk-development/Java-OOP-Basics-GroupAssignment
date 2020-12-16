@@ -112,21 +112,22 @@
   }
 
   // Getting and render the notes
-  console.log("Början på koden");
-
   let notes = [];
-  getAllNotes();
+  prepareFrontPage();
 
   let currentUrl = window.location.href;
   console.log(currentUrl);
 
+  function prepareFrontPage(){
+
+    getAllNotes();
+    filter();
+  }
+
   async function getAllNotes(){
 
-    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
-    console.log("Efter await");
-
 
     console.log(notes)
     renderNotes();
@@ -245,9 +246,9 @@
     });
 
     console.log(res);
-    getAllNotes()
-  }
 
+    getAllNotes();
+  }
 
   async function updateSingleNote(){
 
@@ -260,7 +261,6 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
     $("#note-end").val(await note.finishDate);
-    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
 
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
@@ -271,6 +271,8 @@
       cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
       categoryList.innerHTML += cat;
     }
+
+    $("#note-category").prop("selectedIndex",category.id - 1 );
   }
 
   $(document).ready(function() {
@@ -333,8 +335,8 @@
       fileUrl = await uploadResult.text();
     }
 
-    // setting path variable
-    let newPath = {
+     // setting path variable
+     let newPath = {
       path: fileUrl ? fileUrl : null,
       noteId: id,
       fileType: fileType
@@ -348,6 +350,133 @@
       });
     }
   }
+
+  function filter(){
+
+    showSideNavBarCategories();
+    filterAllNotes();
+    filterChecked();
+  }
+
+  function showSideNavBarCategories(){
+
+    $("#open-navbar").click(async function() {
+
+      let categories = await getCategoriesFromDb();
+      let catList = document.querySelector("#filter-categories");
+      catList.innerHTML = "";
+
+      for (let i = 0; i < categories.length; i++) {
+
+        category =  '<li class = "navbar-category">' + categories[i].category + '</li>';
+        catList.innerHTML += category;
+      }
+
+      filterCategory();
+
+    });
+  }
+
+  function filterAllNotes(){
+
+    $("#allnotes-sidebar").click(async function() {
+
+      notes = [];
+
+      exitSideNavBar();
+
+      let result = await fetch("/rest/notes");
+      notes = await result.json();
+
+      console.log("Längden på notes är: " +notes.length);
+
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+  function filterChecked(){
+
+    $("#checked-sidebar").click(async function() {
+
+     let notesTemp = [];
+
+      for (let i = 0; i < notes.length; i++) {
+
+        if(notes[i].checked == true){
+
+          notesTemp.push(notes[i]);
+        }
+
+      }
+
+      if(notesTemp != []){
+
+        notes = [];
+        notes = Array.from(notesTemp);
+        notesTemp = [];
+      }
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+
+  async function filterCategory(){
+
+    // Refill notes[] again after a filter for category,
+    // so alla notes ares available for a new filter of category
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    let notesTemp = [];
+    let catList = $(".navbar-category");
+
+    for (let i = 0; i < catList.length; i++) {
+
+      $(catList[i]).click(async function() {
+
+        for (let j = 0; j < notes.length; j++) {
+
+          let catId = notes[j].categoryId;
+          let category = await getCategoryByIdFromDb(catId);
+
+          if(await category.category == $(catList[i]).text()){
+            notesTemp.push(notes[j]);
+          }
+        }
+
+        console.log(notesTemp);
+
+        if(notesTemp != []){
+          notes = [];
+          notes = Array.from(notesTemp);
+          notesTemp = [];
+        }
+
+        exitSideNavBar();
+        $("#all-notes").empty();
+        renderNotes();
+
+      });
+    }
+  }
+
+  function exitSideNavBar(){
+
+    $("#side-navbar").css("width", "0");
+    $(".container").removeClass("blur");
+    $(".navbar-wrapper").removeClass("open");
+  }
+    // show single note by id
+    if(currentUrl.includes("/single_note.html?note-id=")) {
+      let id = currentUrl.split("=")[1];
+      showSingleNoteById(id);
+    }
+
 
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
@@ -496,8 +625,6 @@
     return note;
   }
 
-
-
   $("#deleteNoteByIdButton").click(function() {
     deleteNoteById();
 
@@ -548,9 +675,5 @@
 
     console.log(await result.text());
   }
-
-
-
-  console.log("Slutet på koden");
 
 })(jQuery);
