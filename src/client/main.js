@@ -126,10 +126,17 @@
   console.log("Början på koden");
 
   let notes = [];
-  getAllNotes();
+  prepareFrontPage();
 
   let currentUrl = window.location.href;
   console.log(currentUrl);
+
+  function prepareFrontPage(){
+
+    getAllNotes();
+    filter();
+  }
+
 
   async function getAllNotes(){
 
@@ -139,7 +146,6 @@
     console.log("Efter await");
 
     console.log(notes)
-    filter();
     renderNotes();
   }
 
@@ -257,12 +263,7 @@
 
     console.log(res);
 
-    // Get all notes and render again.
-    // Don't call getAllNotes() since filter is there
-    let result = await fetch("/rest/notes");
-    notes = await result.json();
-
-    renderNotes();
+    getAllNotes();
   }
 
 
