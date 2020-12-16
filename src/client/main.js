@@ -123,8 +123,6 @@
   }
 
   // Getting and render the notes
-  console.log("Början på koden");
-
   let notes = [];
   prepareFrontPage();
 
@@ -137,13 +135,10 @@
     filter();
   }
 
-
   async function getAllNotes(){
 
-    console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
-    console.log("Efter await");
 
     console.log(notes)
     renderNotes();
@@ -266,7 +261,6 @@
     getAllNotes();
   }
 
-
   async function updateSingleNote(){
 
     let id = currentUrl.split("note-id=")[1];
@@ -290,8 +284,6 @@
     }
     
     $("#note-category").prop("selectedIndex",category.id - 1 );
-
-
 
     $("#update-button").click(async function(){
 
@@ -473,8 +465,6 @@
     return note;
   }
 
-
-
   $("#deleteNoteByIdButton").click(function() {
     deleteNoteById();
 
@@ -525,9 +515,5 @@
 
     console.log(await result.text());
   }
-
-
-
-  console.log("Slutet på koden");
 
 })(jQuery);
