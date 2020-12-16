@@ -133,11 +133,12 @@
 
   async function getAllNotes(){
 
+    console.log("teeest100");
+
     console.log("Innan await");
     let result = await fetch("/rest/notes");
     notes = await result.json();
     console.log("Efter await");
-
 
     console.log(notes)
     filter();
@@ -257,7 +258,8 @@
     });
 
     console.log(res);
-    getAllNotes()
+    renderNotes();
+    // getAllNotes();
   }
 
 
@@ -272,17 +274,18 @@
     $("#note-title").val(await note.title);
     $("#note-text").val(await note.text);
     $("#note-end").val(await note.finishDate);
-    document.getElementById("note-category").selectedIndex = (await category.id - 1).toString();
-
+    
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
-
+    
+    
     for (let i = 0; i < categories.length; i++) {
-
+      
       cat = '<option value =' + '"' + categories[i].id + '"' + '>' + categories[i].category + '</option>' ;
       categoryList.innerHTML += cat;
     }
+    
+    $("#note-category").prop("selectedIndex",category.id - 1 );
 
 
 
@@ -310,8 +313,13 @@
 
   function filter(){
 
-    // Show categories
+    showSideNavBarCategories();
+    filterAllNotes();
+    filterChecked();
+  }
 
+  function showSideNavBarCategories(){
+    
     $("#open-navbar").click(async function() {
 
       let categories = await getCategoriesFromDb();
@@ -324,54 +332,66 @@
         catList.innerHTML += category;
       }
 
-      console.log("The length of catlist when open navbar: " + $(".navbar-category").length);
       filterCategory();
 
     });
+  }
 
-
-    // One category clicked
-
-
-
-
-
-    // All notes clicked
+  function filterAllNotes(){
 
     $("#allnotes-sidebar").click(async function() {
 
-      exitSideNavBar();
-      $("#all-notes").empty();
+      notes = [];
 
+      exitSideNavBar();
+      
       let result = await fetch("/rest/notes");
       notes = await result.json();
+
+      console.log("Längden på notes är: " +notes.length);
+
+      $("#all-notes").empty();
       renderNotes();
-
     });
+  }
 
-    // Checked clicked
+  function filterChecked(){
 
     $("#checked-sidebar").click(async function() {
 
+     let notesTemp = [];
+
       for (let i = 0; i < notes.length; i++) {
 
-        if(notes[i].checked == false){
+        if(notes[i].checked == true){
 
-          notes.splice(i,1);
+          notesTemp.push(notes[i]);
         }
 
+      }
+
+      if(notesTemp != []){
+
+        notes = [];
+        notes = Array.from(notesTemp);
+        notesTemp = [];
       }
 
       exitSideNavBar();
       $("#all-notes").empty();
       renderNotes();
     });
+
   }
 
 
   async function filterCategory(){
 
-    let categories = await getCategoriesFromDb();
+    // Refill notes[] again after a filter for category,
+    // so alla notes ares available for a new filter of category
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
     let notesTemp = [];
     let catList = $(".navbar-category");
 
@@ -379,47 +399,30 @@
 
       $(catList[i]).click(async function() {
         
-        // console.log("Cat pressed:" + categories[i].category);
-        // console.log("Cat pressed:" + $(catList[i]).text());
-
-        
         for (let j = 0; j < notes.length; j++) {
           
           let catId = notes[j].categoryId;
-          // console.log("ID är: " + catId);
           let category = await getCategoryByIdFromDb(catId);
-          // console.log("CATEGORY FOR THAT ID: " + await category.category);
-          
-          // if(await category.category != $(catList[i]).text()){
-          //   console.log("CATEGORY FOR THAT ID: " + await category.category);
-          //   console.log($(catList[i]).text());
-          //   console.log("index: " + j);
-          //   notes.splice(j,1);
-          // }
 
           if(await category.category == $(catList[i]).text()){
-            console.log("CATEGORY FOR THAT ID: " + await category.category);
-            console.log($(catList[i]).text());
-            console.log("index: " + j);
             notesTemp.push(notes[j]);
-
           }
         }
 
         console.log(notesTemp);
-        notes.length = 0;
-        notes = Array.from(notesTemp);
+
+        if(notesTemp != []){
+          notes = [];
+          notes = Array.from(notesTemp);
+          notesTemp = [];
+        }
 
         exitSideNavBar();
         $("#all-notes").empty();
         renderNotes();
     
       });
-
     }
-
-
-
   }
 
   function exitSideNavBar(){
@@ -428,8 +431,6 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
-
-
 
   async function getPathsFromDb(){
 
