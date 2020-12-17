@@ -569,15 +569,27 @@
     // append files to .section-files
     if(files.length > 0) {
       for(let i = 0; i < files.length; i++) {
-        $(".section-files").append(
-          '<div class="file-container" id="file-'+ files[i].id +'">' +
+
+        if(files[i].path.split("/")[2] == undefined) {
+
+          $(".section-files").append(
+            '<div class="file-container" id="file-'+ files[i].id +'">' +
             '<i class="far fa-file-alt fa-3x"></i>' +
-            '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
-          '</div>'
-        );
+            '<a href="'+ files[i].path +'">'+ files[i].path.split("\\")[2] +'</a>' +
+            '</div>'
+            );
+          } else {
+
+            $(".section-files").append(
+              '<div class="file-container" id="file-'+ files[i].id +'">'+
+                '<i class="far fa-file-alt fa-3x"></i>' +
+                '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
+              '</div>'
+            );
+          }
+        };
       };
     };
-  };
 
 
   async function getPathsFromDb(id){
