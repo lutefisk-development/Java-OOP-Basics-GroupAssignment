@@ -23,10 +23,10 @@ public class NoteEndpoints {
         }));
 
         app.get("/rest/notes/:id", (req, res) -> {
+
             try {
                 int id = Integer.parseInt(req.getParam("id"));
                 Note note = dbConnection.getNotesConnection().getNoteById(id);
-
                 res.json(note);
 
             } catch (NumberFormatException exception) {
@@ -35,6 +35,7 @@ public class NoteEndpoints {
         });
 
         app.get("/rest/new", (req,res) -> {
+
             try {
                 Note note = dbConnection.getNotesConnection().getLastNoteInserted();
                 res.json(note);
@@ -44,6 +45,7 @@ public class NoteEndpoints {
         });
 
         app.post("/rest/notes", (req,res) -> {
+
             Note newNote = (Note) req.getBody(Note.class);
             int id = dbConnection.getNotesConnection().createNote(newNote);
 
@@ -64,12 +66,14 @@ public class NoteEndpoints {
         });
 
         app.delete("/rest/notes/:id", (req, res) -> {
+
             int id = Integer.parseInt(req.getParam("id"));
             dbConnection.getNotesConnection().deleteNoteById(id);
             res.send("Note deleted");
         });
 
         app.put("/rest/notes/:id", (req, res) -> {
+
             Note note = (Note)req.getBody(Note.class);
             dbConnection.getNotesConnection().updateNote(note);
             res.send("Note was updated");

@@ -42,18 +42,16 @@ public class CategoriesConnection {
 
     // category by id
     public Category getCategoryById(int id) {
-        Category category = null;
 
+        Category category = null;
         String query = "SELECT * FROM categories WHERE id = ?";
 
         try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
             preparedStatement.setInt(1, id);
-
             ResultSet resultSet = preparedStatement.executeQuery();
 
             Category[] categoryFromRS = (Category[]) Utils.readResultSetToObject(resultSet, Category[].class);
-
             category = categoryFromRS[0];
 
         } catch (SQLException throwables) {
@@ -64,5 +62,4 @@ public class CategoriesConnection {
 
         return category;
     }
-
 }

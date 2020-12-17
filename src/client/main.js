@@ -1,5 +1,3 @@
-
-
 // Scoping jquery:
 (function($) {
 
@@ -38,8 +36,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -116,7 +112,6 @@
   prepareFrontPage();
 
   let currentUrl = window.location.href;
-  console.log(currentUrl);
 
   function prepareFrontPage(){
 
@@ -129,7 +124,7 @@
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    console.log(notes)
+    console.log(notes);
     renderNotes();
   }
 
@@ -245,7 +240,7 @@
       body: JSON.stringify(note),
     });
 
-    console.log(res);
+    console.log(res.text());
 
     getAllNotes();
   }
@@ -264,7 +259,6 @@
 
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
 
     for (let i = 0; i < categories.length; i++) {
 
@@ -305,8 +299,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -382,13 +374,10 @@
     $("#allnotes-sidebar").click(async function() {
 
       notes = [];
-
       exitSideNavBar();
 
       let result = await fetch("/rest/notes");
       notes = await result.json();
-
-      console.log("Längden på notes är: " +notes.length);
 
       $("#all-notes").empty();
       renderNotes();
@@ -407,7 +396,6 @@
 
           notesTemp.push(notes[i]);
         }
-
       }
 
       if(notesTemp != []){
@@ -449,8 +437,6 @@
           }
         }
 
-        console.log(notesTemp);
-
         if(notesTemp != []){
           notes = [];
           notes = Array.from(notesTemp);
@@ -479,6 +465,7 @@
   };
 
   async function showSingleNoteById(id) {
+
     let note = await getNoteById(id);
     let paths = await getPathsFromDb(id);
 
@@ -492,6 +479,7 @@
 
     // loops through paths and divids up files and images into other arrays
     for(let i = 0; i < paths.length; i++) {
+
       if(paths[i].fileType == "img") {
         imgs.push(paths[i]);
       } else {
@@ -555,7 +543,9 @@
 
     // append imgages to .section-images
     if(imgs.length > 0) {
+
       for(let i = 0; i < imgs.length; i++) {
+
         $(".section-images").append(
           '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
             '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
@@ -568,6 +558,7 @@
 
     // append files to .section-files
     if(files.length > 0) {
+
       for(let i = 0; i < files.length; i++) {
 
         if(files[i].path.split("/")[2] == undefined) {
@@ -624,13 +615,13 @@
   }
 
   async function getNoteById(id){
+
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
     console.log(note);
     return note;
   }
-
 
   $(document).ready(function() {
 
@@ -639,9 +630,8 @@
       let url = window.location.href;
       let urlArray = url.split("=");
       let currentNoteId = urlArray[1];
-      console.log(currentNoteId)
 
-      deleteNoteById(currentNoteId)
+      deleteNoteById(currentNoteId);
 
     });
   });

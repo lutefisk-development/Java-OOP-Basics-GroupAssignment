@@ -39,6 +39,7 @@ public class NotesConnection {
     }
 
     public Note getNoteById(int id){
+
         Note note = null;
         String query = "SELECT * FROM notes WHERE id = ?";
 
@@ -47,11 +48,9 @@ public class NotesConnection {
             preparedStatement.setInt(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-
             Note[] noteFromRS = (Note[]) Utils.readResultSetToObject(resultSet, Note[].class);
 
             note = noteFromRS[0];
-
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -63,8 +62,8 @@ public class NotesConnection {
 
     // getting last inserted note in db, used for setting the id when inserting a new Path
     public Note getLastNoteInserted() {
-        Note note = null;
 
+        Note note = null;
         String query = "SELECT * FROM notes ORDER BY id DESC LIMIT 1";
 
         try {
@@ -83,6 +82,7 @@ public class NotesConnection {
     }
 
     public int createNote(Note note) {
+
         int newNoteId = 0;
         String query = "INSERT INTO notes (title, text, categoryId, checked, creationDate, finishDate) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -115,14 +115,11 @@ public class NotesConnection {
         try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
             preparedStatement.setInt(1, id);
-
             preparedStatement.executeUpdate();
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-
         }
-
     }
 
     public void updateNote(Note note) {
