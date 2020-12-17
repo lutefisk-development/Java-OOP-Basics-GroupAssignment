@@ -24,6 +24,7 @@ public class CategoryEndpoints {
 
         // category by id
         app.get("/rest/categories/:id", (req, res) -> {
+
             try {
                 int id = Integer.parseInt(req.getParam("id"));
                 Category category = dbConnection.getCategoriesConnection().getCategoryById(id);
