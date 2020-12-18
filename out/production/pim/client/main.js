@@ -117,6 +117,7 @@
 
     getAllNotes();
     filter();
+    sort();
   }
 
   async function getAllNotes(){
@@ -457,6 +458,71 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
+
+  function sort(){
+
+    sortByTitle();
+    sortByCreatedDate();
+    sortByEndDate();
+
+  }
+
+  async function sortByTitle(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-title").click(function(){
+
+      // Sorts first by title, second by creationDate
+      notes.sort((a,b) => (a.title > b.title) ? 1 : (a.title  === b.title) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByCreatedDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-created").click(function(){
+
+      // Sorts first by creationDate, second by endDate (finsihDate)
+      notes.sort((a,b) => (a.creationDate > b.creationDate) ? 1 : (a.creationDate  === b.creationDate) ? ((a.finishDate > b.finishDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByEndDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-end").click(function(){
+
+      // Sorts first by endDate (finsihDate), second by creationDate
+      notes.sort((a,b) => (a.finishDate > b.finishDate) ? 1 : (a.finishDate  === b.finishDate) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
 
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
