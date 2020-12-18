@@ -485,14 +485,20 @@
 
   }
 
-  function sortByCreatedDate(){
+  async function sortByCreatedDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
 
     $("#sortlist-created").click(function(){
 
-      console.log("Pressed created");
+      notes.sort((a,b) => (a.creationDate > b.creationDate) ? 1 : (a.creationDate  === b.creationDate) ? ((a.finishDate > b.finishDate) ? 1: -1) : -1);
 
-       //     renderNotes();
-
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
     });
 
   }
