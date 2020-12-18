@@ -467,15 +467,20 @@
 
   }
 
-  function sortByTitle(){
+  async function sortByTitle(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
 
     $("#sortlist-title").click(function(){
 
-      console.log("Pressed title");
+      notes.sort((a,b) => (a.title > b.title) ? 1 : (a.title  === b.title) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
 
-       //     renderNotes();
-
-
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
     });
 
   }
