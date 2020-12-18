@@ -117,6 +117,7 @@
 
     getAllNotes();
     filter();
+    sort();
   }
 
   async function getAllNotes(){
@@ -457,6 +458,51 @@
     $(".container").removeClass("blur");
     $(".navbar-wrapper").removeClass("open");
   }
+
+  function sort(){
+
+    sortByTitle();
+    sortByCreatedDate();
+    sortByEndDate();
+
+  }
+
+  function sortByTitle(){
+
+    $("#sortlist-title").click(function(){
+
+      console.log("Pressed title");
+
+       //     renderNotes();
+
+
+    });
+
+  }
+
+  function sortByCreatedDate(){
+
+    $("#sortlist-created").click(function(){
+
+      console.log("Pressed created");
+
+       //     renderNotes();
+
+    });
+
+  }
+
+  function sortByEndDate(){
+
+    $("#sortlist-end").click(function(){
+
+      console.log("Pressed end");
+
+       //     renderNotes();
+
+    });
+  }
+
 
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
