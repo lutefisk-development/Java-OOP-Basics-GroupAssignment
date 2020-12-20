@@ -736,11 +736,10 @@
     console.log(await result.text());
   }
 
-  async function deletePathInDb(path){
+  async function deletePathInDb(id){
 
-    let result = await fetch("/rest/paths/id", {
+    let result = await fetch("/rest/paths/" + id, {
         method: "DELETE",
-        body: JSON.stringify(path)
     });
 
 
@@ -761,10 +760,9 @@
 
     $(document).on('click', '#deleteNoteByIdButton', function() {
 
-      let url = window.location.href;
-      let urlArray = url.split("=");
-      let currentNoteId = urlArray[1];
-
+      let currentNoteId = currentUrl.split("=")[1];
+    
+      deletePathInDb(currentNoteId);
       deleteNoteById(currentNoteId);
 
     });
