@@ -136,8 +136,8 @@
     for (let i = 0; i < notes.length; i++) {
 
       // Check if finishDate is null, then set to an empty string
-      if(notes[i].finishDate == null){
-        notes[i].finishDate = "";
+      if(notes[i].finishDate === null){
+        notes[i].finishDate = "No date is set";
       }
 
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
@@ -604,8 +604,8 @@
     let paths = await getPathsFromDb(id);
 
     // checks if there is a end date, if not set default message
-    if(note.finishDate == "") {
-      note.finishDate = "No date set"
+    if(note.finishDate === null) {
+      note.finishDate = "No date is set";
     };
 
     let imgs = [];
