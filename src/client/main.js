@@ -545,7 +545,7 @@
     $("#sortlist-title").click(function(){
 
       // Sorts first by title, second by creationDate
-      notes.sort((a,b) => (a.title > b.title) ? 1 : (a.title  === b.title) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+      notes.sort((a,b) => (a.title.toUpperCase() > b.title.toUpperCase()) ? 1 : (a.title.toUpperCase()   === b.title.toUpperCase()) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
 
       exitSideNavBar();
       $("#all-notes").empty();
