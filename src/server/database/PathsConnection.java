@@ -126,7 +126,7 @@ public class PathsConnection {
     // gets a path by passing in a id for a note
     public List<Path> getPathByNoteId(int id) {
         List<Path> paths = null;
-        String query = "SELECT paths.* FROM paths, notes WHERE notes.id = paths.noteId AND paths.noteId = ?";
+        String query = "SELECT * FROM paths WHERE paths.noteId = ?";
 
         try {
             PreparedStatement statement = dbConnection.prepareStatement(query);
