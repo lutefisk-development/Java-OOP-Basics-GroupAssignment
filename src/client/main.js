@@ -136,8 +136,8 @@
     for (let i = 0; i < notes.length; i++) {
 
       // Check if finishDate is null, then set to an empty string
-      if(notes[i].finishDate == null){
-        notes[i].finishDate = "";
+      if(notes[i].finishDate === null){
+        notes[i].finishDate = "No date is set";
       }
 
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
@@ -545,7 +545,7 @@
     $("#sortlist-title").click(function(){
 
       // Sorts first by title, second by creationDate
-      notes.sort((a,b) => (a.title > b.title) ? 1 : (a.title  === b.title) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+      notes.sort((a,b) => (a.title.toUpperCase() > b.title.toUpperCase()) ? 1 : (a.title.toUpperCase()   === b.title.toUpperCase()) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
 
       exitSideNavBar();
       $("#all-notes").empty();
@@ -604,8 +604,8 @@
     let paths = await getPathsFromDb(id);
 
     // checks if there is a end date, if not set default message
-    if(note.finishDate == "") {
-      note.finishDate = "No date set"
+    if(note.finishDate === null) {
+      note.finishDate = "No date is set";
     };
 
     let imgs = [];
