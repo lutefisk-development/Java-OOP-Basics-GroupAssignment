@@ -87,27 +87,20 @@ public class PathsConnection {
         return newPathId;
     }
 
-    public boolean deletePath(Path path){
+    public void deletePath(int id){
 
-        if(!pathIdExists(path)){
-            System.out.println("A path with this id doesn't exist in the db.");
-            return false;
-        }
-
-        String query = "DELETE FROM paths WHERE id = ?";
+        String query = "DELETE FROM paths WHERE Id = ?";
 
         try {
             PreparedStatement statement = dbConnection.prepareStatement(query);
-            statement.setInt(1,path.getId());
+            statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
 
-        return true;
     }
 
-    // Needed this method before delete a path, to se if it exists in db
     public Path getPathById(int id){
 
         Path path = null;
