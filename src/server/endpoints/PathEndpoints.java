@@ -20,6 +20,7 @@ public class PathEndpoints {
 
         // Endpoint for creating a path based on the file in request
         app.post("/rest/file-upload", (req,res) -> {
+
             String url = null;
 
             // get file from formData
@@ -36,14 +37,15 @@ public class PathEndpoints {
             res.send(url);
         });
 
+        app.get("/rest/paths/:id", (request, response) -> {
 
-        app.get("/rest/paths/:id",(((request, response) -> {
             int id = Integer.parseInt(request.getParam("id"));
             List<Path> paths = dbConnection.getPathsConnection().getPathByNoteId(id);
             response.json(paths);
-        })));
+        });
 
         app.post("/rest/paths", (request, response) -> {
+
             Path newPath = (Path)request.getBody(Path.class);
             int id = dbConnection.getPathsConnection().createPath(newPath);
 
@@ -72,8 +74,6 @@ public class PathEndpoints {
                 response.send("Delete went ok.");
             }
         })));
-
-
 
     }
 }

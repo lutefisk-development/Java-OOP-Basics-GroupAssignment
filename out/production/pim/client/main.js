@@ -1,5 +1,3 @@
-
-
 // Scoping jquery:
 (function($) {
 
@@ -38,8 +36,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -116,12 +112,12 @@
   prepareFrontPage();
 
   let currentUrl = window.location.href;
-  console.log(currentUrl);
 
   function prepareFrontPage(){
 
     getAllNotes();
     filter();
+    sort();
   }
 
   async function getAllNotes(){
@@ -129,7 +125,7 @@
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    console.log(notes)
+    console.log(notes);
     renderNotes();
   }
 
@@ -245,7 +241,7 @@
       body: JSON.stringify(note),
     });
 
-    console.log(res);
+    console.log(res.text());
 
     getAllNotes();
   }
@@ -264,7 +260,6 @@
 
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
 
     for (let i = 0; i < categories.length; i++) {
 
@@ -305,8 +300,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -382,13 +375,10 @@
     $("#allnotes-sidebar").click(async function() {
 
       notes = [];
-
       exitSideNavBar();
 
       let result = await fetch("/rest/notes");
       notes = await result.json();
-
-      console.log("Längden på notes är: " +notes.length);
 
       $("#all-notes").empty();
       renderNotes();
@@ -407,7 +397,6 @@
 
           notesTemp.push(notes[i]);
         }
-
       }
 
       if(notesTemp != []){
@@ -449,8 +438,6 @@
           }
         }
 
-        console.log(notesTemp);
-
         if(notesTemp != []){
           notes = [];
           notes = Array.from(notesTemp);
@@ -472,6 +459,71 @@
     $(".navbar-wrapper").removeClass("open");
   }
 
+  function sort(){
+
+    sortByTitle();
+    sortByCreatedDate();
+    sortByEndDate();
+
+  }
+
+  async function sortByTitle(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-title").click(function(){
+
+      // Sorts first by title, second by creationDate
+      notes.sort((a,b) => (a.title > b.title) ? 1 : (a.title  === b.title) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByCreatedDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-created").click(function(){
+
+      // Sorts first by creationDate, second by endDate (finsihDate)
+      notes.sort((a,b) => (a.creationDate > b.creationDate) ? 1 : (a.creationDate  === b.creationDate) ? ((a.finishDate > b.finishDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByEndDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-end").click(function(){
+
+      // Sorts first by endDate (finsihDate), second by creationDate
+      notes.sort((a,b) => (a.finishDate > b.finishDate) ? 1 : (a.finishDate  === b.finishDate) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
     let id = currentUrl.split("=")[1];
@@ -479,6 +531,7 @@
   };
 
   async function showSingleNoteById(id) {
+
     let note = await getNoteById(id);
     let paths = await getPathsFromDb(id);
 
@@ -492,6 +545,7 @@
 
     // loops through paths and divids up files and images into other arrays
     for(let i = 0; i < paths.length; i++) {
+
       if(paths[i].fileType == "img") {
         imgs.push(paths[i]);
       } else {
@@ -555,7 +609,9 @@
 
     // append imgages to .section-images
     if(imgs.length > 0) {
+
       for(let i = 0; i < imgs.length; i++) {
+
         $(".section-images").append(
           '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
             '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
@@ -568,16 +624,29 @@
 
     // append files to .section-files
     if(files.length > 0) {
+
       for(let i = 0; i < files.length; i++) {
-        $(".section-files").append(
-          '<div class="file-container" id="file-'+ files[i].id +'">' +
+
+        if(files[i].path.split("/")[2] == undefined) {
+
+          $(".section-files").append(
+            '<div class="file-container" id="file-'+ files[i].id +'">' +
             '<i class="far fa-file-alt fa-3x"></i>' +
-            '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
-          '</div>'
-        );
+            '<a href="'+ files[i].path +'">'+ files[i].path.split("\\")[2] +'</a>' +
+            '</div>'
+            );
+          } else {
+
+            $(".section-files").append(
+              '<div class="file-container" id="file-'+ files[i].id +'">'+
+                '<i class="far fa-file-alt fa-3x"></i>' +
+                '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
+              '</div>'
+            );
+          }
+        };
       };
     };
-  };
 
 
   async function getPathsFromDb(id){
@@ -612,13 +681,13 @@
   }
 
   async function getNoteById(id){
+
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
     console.log(note);
     return note;
   }
-
 
   $(document).ready(function() {
 
@@ -627,9 +696,8 @@
       let url = window.location.href;
       let urlArray = url.split("=");
       let currentNoteId = urlArray[1];
-      console.log(currentNoteId)
 
-      deleteNoteById(currentNoteId)
+      deleteNoteById(currentNoteId);
 
     });
   });

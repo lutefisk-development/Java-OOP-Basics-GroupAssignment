@@ -1,5 +1,3 @@
-
-
 // Scoping jquery:
 (function($) {
 
@@ -38,8 +36,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -116,12 +112,12 @@
   prepareFrontPage();
 
   let currentUrl = window.location.href;
-  console.log(currentUrl);
 
   function prepareFrontPage(){
 
     getAllNotes();
     filter();
+    sort();
   }
 
   async function getAllNotes(){
@@ -129,7 +125,7 @@
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    console.log(notes)
+    console.log(notes);
     renderNotes();
   }
 
@@ -140,74 +136,142 @@
     for (let i = 0; i < notes.length; i++) {
 
       // Check if finishDate is null, then set to an empty string
-      if(notes[i].finishDate == null){
-        notes[i].finishDate = "";
+      if(notes[i].finishDate === null){
+        notes[i].finishDate = "No date is set";
       }
 
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
+      let paths = await getPathsFromDb(notes[i].id);
+
+      console.log(paths);
 
       if(notes[i].checked){
 
-        allNotesElement.append(
-          '<article class="checktrue">' +
-         '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category.category.toUpperCase() + '</p>' +
-            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
-          '</div>' +
-          '<h1>' +
-            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
-            notes[i].title +
-            '</a>' +
-          '</h1>' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>' + notes[i].creationDate + '</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>' + notes[i].finishDate + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="files-checked">' +
-            '<i class="far fa-file-alt fa-2x"></i>' +
-            '<i class="far fa-file-image fa-2x"></i>' +
-            '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
-         '</div>' +
-        '</article>'
-        );
+        if(paths.length >0){
 
+          allNotesElement.append(
+            '<article class="checktrue">' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i class="fas fa-paperclip fa-2x"></i>' +
+              '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        } else {
+
+          allNotesElement.append(
+            '<article class="checktrue">' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }
       }
       else{
 
-        allNotesElement.append(
-          '<article>' +
-         '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category.category.toUpperCase() + '</p>' +
-            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
-          '</div>' +
-          '<h1>' +
-            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
-            notes[i].title +
-            '</a>' +
-          '</h1>' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>' + notes[i].creationDate + '</p>' +
+        if(paths.length >0){
+
+          allNotesElement.append(
+            '<article>' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
             '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>' + notes[i].finishDate + '</p>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
-          '<div class="files-checked">' +
-            '<i class="far fa-file-alt fa-2x"></i>' +
-            '<i class="far fa-file-image fa-2x"></i>' +
-            '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
-         '</div>' +
-        '</article>'
-        );
+            '<div class="files-checked">' +
+              '<i class="fas fa-paperclip fa-2x"></i>' +
+              '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }else{
+
+          allNotesElement.append(
+            '<article>' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }
+
+
       }
 
       if(currentUrl.includes("/update_note.html?note-id=")){
@@ -245,7 +309,7 @@
       body: JSON.stringify(note),
     });
 
-    console.log(res);
+    console.log(res.text());
 
     getAllNotes();
   }
@@ -264,7 +328,6 @@
 
     let categoryList = document.querySelector("#note-category");
     categoryList.innerHTML = "";
-
 
     for (let i = 0; i < categories.length; i++) {
 
@@ -305,8 +368,6 @@
     let fileType = "";
     if($("#note-file").prop('files').length > 0) {
       let $fileArray = $("#note-file").prop('files');
-
-      console.log($fileArray);
 
       let formData = new FormData();
 
@@ -382,13 +443,10 @@
     $("#allnotes-sidebar").click(async function() {
 
       notes = [];
-
       exitSideNavBar();
 
       let result = await fetch("/rest/notes");
       notes = await result.json();
-
-      console.log("Längden på notes är: " +notes.length);
 
       $("#all-notes").empty();
       renderNotes();
@@ -407,7 +465,6 @@
 
           notesTemp.push(notes[i]);
         }
-
       }
 
       if(notesTemp != []){
@@ -449,8 +506,6 @@
           }
         }
 
-        console.log(notesTemp);
-
         if(notesTemp != []){
           notes = [];
           notes = Array.from(notesTemp);
@@ -472,6 +527,71 @@
     $(".navbar-wrapper").removeClass("open");
   }
 
+  function sort(){
+
+    sortByTitle();
+    sortByCreatedDate();
+    sortByEndDate();
+
+  }
+
+  async function sortByTitle(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-title").click(function(){
+
+      // Sorts first by title, second by creationDate
+      notes.sort((a,b) => (a.title.toUpperCase() > b.title.toUpperCase()) ? 1 : (a.title.toUpperCase()   === b.title.toUpperCase()) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByCreatedDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-created").click(function(){
+
+      // Sorts first by creationDate, second by endDate (finsihDate)
+      notes.sort((a,b) => (a.creationDate > b.creationDate) ? 1 : (a.creationDate  === b.creationDate) ? ((a.finishDate > b.finishDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+
+  }
+
+  async function sortByEndDate(){
+
+    // Empty and fill, if any filters have been done before
+    notes = [];
+    let result = await fetch("/rest/notes");
+    notes = await result.json();
+
+    $("#sortlist-end").click(function(){
+
+      // Sorts first by endDate (finsihDate), second by creationDate
+      notes.sort((a,b) => (a.finishDate > b.finishDate) ? 1 : (a.finishDate  === b.finishDate) ? ((a.creationDate > b.creationDate) ? 1: -1) : -1);
+
+      exitSideNavBar();
+      $("#all-notes").empty();
+      renderNotes();
+    });
+  }
+
+
   // show single note by id
   if(currentUrl.includes("/single_note.html?note-id=")) {
     let id = currentUrl.split("=")[1];
@@ -479,12 +599,13 @@
   };
 
   async function showSingleNoteById(id) {
+
     let note = await getNoteById(id);
     let paths = await getPathsFromDb(id);
 
     // checks if there is a end date, if not set default message
-    if(note.finishDate == "") {
-      note.finishDate = "No date set"
+    if(note.finishDate === null) {
+      note.finishDate = "No date is set";
     };
 
     let imgs = [];
@@ -492,6 +613,7 @@
 
     // loops through paths and divids up files and images into other arrays
     for(let i = 0; i < paths.length; i++) {
+
       if(paths[i].fileType == "img") {
         imgs.push(paths[i]);
       } else {
@@ -555,7 +677,9 @@
 
     // append imgages to .section-images
     if(imgs.length > 0) {
+
       for(let i = 0; i < imgs.length; i++) {
+
         $(".section-images").append(
           '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
             '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
@@ -568,16 +692,29 @@
 
     // append files to .section-files
     if(files.length > 0) {
+
       for(let i = 0; i < files.length; i++) {
-        $(".section-files").append(
-          '<div class="file-container" id="file-'+ files[i].id +'">' +
+
+        if(files[i].path.split("/")[2] == undefined) {
+
+          $(".section-files").append(
+            '<div class="file-container" id="file-'+ files[i].id +'">' +
             '<i class="far fa-file-alt fa-3x"></i>' +
-            '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
-          '</div>'
-        );
+            '<a href="'+ files[i].path +'">'+ files[i].path.split("\\")[2] +'</a>' +
+            '</div>'
+            );
+          } else {
+
+            $(".section-files").append(
+              '<div class="file-container" id="file-'+ files[i].id +'">'+
+                '<i class="far fa-file-alt fa-3x"></i>' +
+                '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
+              '</div>'
+            );
+          }
+        };
       };
     };
-  };
 
 
   async function getPathsFromDb(id){
@@ -612,13 +749,13 @@
   }
 
   async function getNoteById(id){
+
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
     console.log(note);
     return note;
   }
-
 
   $(document).ready(function() {
 
@@ -627,9 +764,8 @@
       let url = window.location.href;
       let urlArray = url.split("=");
       let currentNoteId = urlArray[1];
-      console.log(currentNoteId)
 
-      deleteNoteById(currentNoteId)
+      deleteNoteById(currentNoteId);
 
     });
   });
