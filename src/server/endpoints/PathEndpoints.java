@@ -67,13 +67,16 @@ public class PathEndpoints {
 
         app.delete("/rest/paths/:id", (((request, response) -> {
 
-            Path path = (Path) request.getBody(Path.class);
-            boolean ok = dbConnection.getPathsConnection().deletePath(path);
+            int id = Integer.parseInt(request.getParam("id"));
+            List<Path> paths = dbConnection.getPathsConnection().getPathByNoteId(id);
 
-            if (ok){
-                response.send("Delete went ok.");
+            for(int i = 0; i < paths.size(); i++) {
+                dbConnection.getPathsConnection().deletePath(paths.get(i).getId());
             }
+
         })));
+
+
 
     }
 }

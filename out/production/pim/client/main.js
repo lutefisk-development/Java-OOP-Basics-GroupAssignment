@@ -141,69 +141,137 @@
       }
 
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
+      let paths = await getPathsFromDb(notes[i].id);
+
+      console.log(paths);
 
       if(notes[i].checked){
 
-        allNotesElement.append(
-          '<article class="checktrue">' +
-         '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category.category.toUpperCase() + '</p>' +
-            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
-          '</div>' +
-          '<h1>' +
-            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
-            notes[i].title +
-            '</a>' +
-          '</h1>' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>' + notes[i].creationDate + '</p>' +
-            '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>' + notes[i].finishDate + '</p>' +
-            '</div>' +
-          '</div>' +
-          '<div class="files-checked">' +
-            '<i class="far fa-file-alt fa-2x"></i>' +
-            '<i class="far fa-file-image fa-2x"></i>' +
-            '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
-         '</div>' +
-        '</article>'
-        );
+        if(paths.length >0){
 
+          allNotesElement.append(
+            '<article class="checktrue">' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i class="fas fa-paperclip fa-2x"></i>' +
+              '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        } else {
+
+          allNotesElement.append(
+            '<article class="checktrue">' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i id="'+notes[i].id+'" class="far fa-check-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }
       }
       else{
 
-        allNotesElement.append(
-          '<article>' +
-         '<div class="article-header" id="'+notes[i].id+'">' +
-            '<p>' + await category.category.toUpperCase() + '</p>' +
-            '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
-          '</div>' +
-          '<h1>' +
-            '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
-            notes[i].title +
-            '</a>' +
-          '</h1>' +
-          '<div class="dates">' +
-            '<div class="created-date">' +
-              '<p>Created:</p>' +
-              '<p>' + notes[i].creationDate + '</p>' +
+        if(paths.length >0){
+
+          allNotesElement.append(
+            '<article>' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
             '</div>' +
-            '<div class="end-date">' +
-              '<p>Ends:</p>' +
-              '<p>' + notes[i].finishDate + '</p>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
             '</div>' +
-          '</div>' +
-          '<div class="files-checked">' +
-            '<i class="far fa-file-alt fa-2x"></i>' +
-            '<i class="far fa-file-image fa-2x"></i>' +
-            '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
-         '</div>' +
-        '</article>'
-        );
+            '<div class="files-checked">' +
+              '<i class="fas fa-paperclip fa-2x"></i>' +
+              '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }else{
+
+          allNotesElement.append(
+            '<article>' +
+           '<div class="article-header" id="'+notes[i].id+'">' +
+              '<p>' + await category.category.toUpperCase() + '</p>' +
+              '<a href="/update_note.html?note-id=' + notes[i].id + '" class="far fa-edit fa-2x"></a>' +
+            '</div>' +
+            '<h1>' +
+              '<a href="/single_note.html?note-id=' + notes[i].id + '">' +
+              notes[i].title +
+              '</a>' +
+            '</h1>' +
+            '<div class="dates">' +
+              '<div class="created-date">' +
+                '<p>Created:</p>' +
+                '<p>' + notes[i].creationDate + '</p>' +
+              '</div>' +
+              '<div class="end-date">' +
+                '<p>Ends:</p>' +
+                '<p>' + notes[i].finishDate + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="files-checked">' +
+              '<i id="'+notes[i].id+'" class="far fa-square fa-2x check-note"></i>' +
+           '</div>' +
+          '</article>'
+          );
+
+        }
+
+
       }
 
       if(currentUrl.includes("/update_note.html?note-id=")){
@@ -668,11 +736,11 @@
     console.log(await result.text());
   }
 
-  async function deletePathInDb(path){
+  async function deletePathInDb(id){
 
-    let result = await fetch("/rest/paths/id", {
+    let result = await fetch("/rest/paths/" + id, {
         method: "DELETE",
-        body: JSON.stringify(path)
+        // body: JSON.stringify(id)
     });
 
 
@@ -697,7 +765,10 @@
       let urlArray = url.split("=");
       let currentNoteId = urlArray[1];
 
+      deletePathInDb(currentNoteId);
       deleteNoteById(currentNoteId);
+
+      
 
     });
   });
