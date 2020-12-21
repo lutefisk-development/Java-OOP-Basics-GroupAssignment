@@ -125,7 +125,6 @@
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    console.log(notes);
     renderNotes();
   }
 
@@ -135,15 +134,8 @@
 
     for (let i = 0; i < notes.length; i++) {
 
-      // Check if finishDate is null, then set to an empty string
-      if(notes[i].finishDate === null){
-        notes[i].finishDate = "No date is set";
-      }
-
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
       let paths = await getPathsFromDb(notes[i].id);
-
-      console.log(paths);
 
       if(notes[i].checked){
 
@@ -309,7 +301,7 @@
       body: JSON.stringify(note),
     });
 
-    console.log(res.text());
+    console.log(await res.text());
 
     getAllNotes();
   }
@@ -603,10 +595,6 @@
     let note = await getNoteById(id);
     let paths = await getPathsFromDb(id);
 
-    // checks if there is a end date, if not set default message
-    if(note.finishDate === null) {
-      note.finishDate = "No date is set";
-    };
 
     let imgs = [];
     let files = [];
@@ -721,19 +709,8 @@
 
     let result = await fetch("/rest/paths/" +id);
     let paths = await result.json();
-    console.log(paths);
 
     return paths;
-  }
-
-  async function createPathInDb(path){
-
-    let result = await fetch("/rest/paths", {
-        method: "POST",
-        body: JSON.stringify(path)
-    });
-
-    console.log(await result.text());
   }
 
   async function deletePathInDb(id){
@@ -773,7 +750,7 @@
       method: "DELETE",
     });
 
-    window.location.replace("http://localhost:1000/");
+    console.log(await result.text());
   };
 
   async function getCategoriesFromDb(){
@@ -797,8 +774,6 @@
 
     let result = await fetch("/rest/categories/" + id);
     let category = await result.json();
-
-    console.log(category);
 
     return category;
   }
