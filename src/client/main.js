@@ -453,7 +453,7 @@
 
       for (let i = 0; i < notes.length; i++) {
 
-        if(notes[i].checked == true){
+        if(notes[i].checked == false){
 
           notesTemp.push(notes[i]);
         }
