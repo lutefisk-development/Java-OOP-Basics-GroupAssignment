@@ -21,7 +21,7 @@ public class NotesConnection {
     public List<Note> getNotes(){
 
         List<Note> notes = null;
-        String query = "SELECT * FROM notes";
+        String query = "SELECT * FROM notes ORDER BY creationDate DESC";
 
         try {
             PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
