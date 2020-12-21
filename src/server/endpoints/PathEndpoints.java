@@ -74,6 +74,7 @@ public class PathEndpoints {
                 dbConnection.getPathsConnection().deletePath(paths.get(i).getId());
             }
 
+            response.send("All paths belonging to note with id: " + id + " is removed from the database");
         })));
 
 
