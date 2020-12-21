@@ -27,14 +27,16 @@ header .add-note {
   -webkit-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   -moz-box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
   box-shadow: 10px 10px 10px -7px rgba(107,107,107,1);
+}
+
+header .add-note .create-note-link {
+  height: 100%;
+  width: 100%;
+  color: #000;
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-header .add-note .fa-plus {
-  color: #000;
-  text-decoration: none;
 }
 
 header .add-note:hover .fa-plus {
@@ -91,7 +93,7 @@ section#all-notes .files-checked .fa-square:hover {
 }
 
 section#all-notes h1 {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
 }
 
 section#all-notes h1 a {
