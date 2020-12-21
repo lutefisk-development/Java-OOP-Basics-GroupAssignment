@@ -44,26 +44,6 @@ public class PathsConnection {
         return url;
     }
 
-    public List<Path> getPaths(){
-
-        List<Path> paths = null;
-        String query = "SELECT * FROM paths";
-
-        try {
-            PreparedStatement preparedStatement = dbConnection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            Path [] pathsResultset = (Path[]) Utils.readResultSetToObject(resultSet,Path[].class);
-            paths = List.of(pathsResultset);
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        return paths;
-    }
-
     public int createPath(Path path){
         int newPathId = 0;
         String query = "INSERT INTO paths (path, fileType, noteId) VALUES(?,?,?)";
@@ -143,10 +123,6 @@ public class PathsConnection {
         }
 
         return paths;
-    }
-
-    public boolean pathIdExists(Path path){
-        return getPathById(path.getId()) != null;
     }
 
 }
