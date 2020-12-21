@@ -75,7 +75,7 @@
       categoryId: $("#note-category").val() == 0 ? 1 : $("#note-category").val(),
       checked: false,
       creationDate: today,
-      finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
+      finishDate: $("#note-end").val() == "" ? "No date is set" : $("#note-end").val(),
     }
 
     // make a new note
@@ -125,7 +125,6 @@
     let result = await fetch("/rest/notes");
     notes = await result.json();
 
-    console.log(notes);
     renderNotes();
   }
 
@@ -135,15 +134,8 @@
 
     for (let i = 0; i < notes.length; i++) {
 
-      // Check if finishDate is null, then set to an empty string
-      if(notes[i].finishDate === null){
-        notes[i].finishDate = "No date is set";
-      }
-
       let category = await getCategoryByIdFromDb(notes[i].categoryId);
       let paths = await getPathsFromDb(notes[i].id);
-
-      console.log(paths);
 
       if(notes[i].checked){
 
@@ -309,7 +301,7 @@
       body: JSON.stringify(note),
     });
 
-    console.log(res.text());
+    console.log(await res.text());
 
     getAllNotes();
   }
@@ -461,7 +453,7 @@
 
       for (let i = 0; i < notes.length; i++) {
 
-        if(notes[i].checked == true){
+        if(notes[i].checked == false){
 
           notesTemp.push(notes[i]);
         }
@@ -603,10 +595,6 @@
     let note = await getNoteById(id);
     let paths = await getPathsFromDb(id);
 
-    // checks if there is a end date, if not set default message
-    if(note.finishDate === null) {
-      note.finishDate = "No date is set";
-    };
 
     let imgs = [];
     let files = [];
@@ -721,19 +709,8 @@
 
     let result = await fetch("/rest/paths/" +id);
     let paths = await result.json();
-    console.log(paths);
 
     return paths;
-  }
-
-  async function createPathInDb(path){
-
-    let result = await fetch("/rest/paths", {
-        method: "POST",
-        body: JSON.stringify(path)
-    });
-
-    console.log(await result.text());
   }
 
   async function deletePathInDb(id){
@@ -752,18 +729,19 @@
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
-    console.log(note);
     return note;
   }
 
   $(document).ready(function() {
 
-    $(document).on('click', '#deleteNoteByIdButton', function() {
+    $(document).on('click', '#deleteNoteByIdButton', async function() {
 
       let currentNoteId = currentUrl.split("=")[1];
-    
-      deletePathInDb(currentNoteId);
-      deleteNoteById(currentNoteId);
+
+      await deletePathInDb(currentNoteId);
+      await deleteNoteById(currentNoteId);
+
+    window.location.replace("http://localhost:1000/");
 
     });
   });
@@ -773,7 +751,7 @@
       method: "DELETE",
     });
 
-    window.location.replace("http://localhost:1000/");
+    console.log(await result.text());
   };
 
   async function getCategoriesFromDb(){
@@ -797,8 +775,6 @@
 
     let result = await fetch("/rest/categories/" + id);
     let category = await result.json();
-
-    console.log(category);
 
     return category;
   }
