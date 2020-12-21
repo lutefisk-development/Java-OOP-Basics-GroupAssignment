@@ -75,7 +75,7 @@
       categoryId: $("#note-category").val() == 0 ? 1 : $("#note-category").val(),
       checked: false,
       creationDate: today,
-      finishDate: $("#note-end").val() == "" ? null : $("#note-end").val(),
+      finishDate: $("#note-end").val() == "" ? "No date is set" : $("#note-end").val(),
     }
 
     // make a new note
