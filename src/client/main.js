@@ -729,18 +729,19 @@
     let result = await fetch("/rest/notes/" + id);
     note = await result.json();
 
-    console.log(note);
     return note;
   }
 
   $(document).ready(function() {
 
-    $(document).on('click', '#deleteNoteByIdButton', function() {
+    $(document).on('click', '#deleteNoteByIdButton', async function() {
 
       let currentNoteId = currentUrl.split("=")[1];
-    
-      deletePathInDb(currentNoteId);
-      deleteNoteById(currentNoteId);
+
+      await deletePathInDb(currentNoteId);
+      await deleteNoteById(currentNoteId);
+
+    window.location.replace("http://localhost:1000/");
 
     });
   });
