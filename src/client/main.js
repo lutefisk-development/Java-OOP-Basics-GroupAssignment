@@ -670,10 +670,11 @@
 
         $(".section-images").append(
           '<figure class="img-wrapper" id="img-'+ imgs[i].id +'">' +
+          '<i id="confirmDeleteSingleImg" class="far fa-trash-alt fa-1x"></i>' +
             '<a href="'+ imgs[i].path +'" data-toggle="lightbox">' +
-              '<img src="'+ imgs[i].path +'" alt="">' +
+            '<img src="'+ imgs[i].path +'" alt="">' +
             '</a>' +
-          '</figure>'
+            '</figure>'
         );
       };
     };
@@ -687,6 +688,7 @@
 
           $(".section-files").append(
             '<div class="file-container" id="file-'+ files[i].id +'">' +
+            '<i id="confirmDeleteSingleFile" class="far fa-trash-alt fa-1x"></i>' +
             '<i class="far fa-file-alt fa-3x"></i>' +
             '<a href="'+ files[i].path +'">'+ files[i].path.split("\\")[2] +'</a>' +
             '</div>'
@@ -695,6 +697,7 @@
 
             $(".section-files").append(
               '<div class="file-container" id="file-'+ files[i].id +'">'+
+              '<i id="confirmDeleteSingleFile" class="far fa-trash-alt fa-1x"></i>' +
                 '<i class="far fa-file-alt fa-3x"></i>' +
                 '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
               '</div>'
@@ -736,13 +739,18 @@
 
     $(document).on('click', '#deleteNoteByIdButton', async function() {
 
-      let currentNoteId = currentUrl.split("=")[1];
+      let result = confirm("Are you sure you want to delete this note?")
+      
+      if(result){
 
-      await deletePathInDb(currentNoteId);
-      await deleteNoteById(currentNoteId);
-
-    window.location.replace("http://localhost:1000/");
-
+        
+        let currentNoteId = currentUrl.split("=")[1];
+        
+        await deletePathInDb(currentNoteId);
+        await deleteNoteById(currentNoteId);
+        
+        window.location.replace("http://localhost:1000/");
+      }
     });
   });
 
@@ -753,6 +761,49 @@
 
     console.log(await result.text());
   };
+
+  $(document).ready(function() {
+
+    $(document).on('click', '#confirmDeleteSingleImg', async function() {
+      
+      imgId = ($(this).parent().attr("id").split("-")[1])
+      let result = confirm("Are you sure you want to delete this image?")
+      
+      if(result){
+
+      await deleteSinglePathInDb(imgId);
+      
+      window.location.reload();
+      }
+    });
+  });
+
+  $(document).ready(function() {
+
+    $(document).on('click', '#confirmDeleteSingleFile', async function() {
+
+      fileId = ($(this).parent().attr("id").split("-")[1])
+      let result = confirm("Are you sure you want to delete this file?")
+      
+      if(result){
+
+        await deleteSinglePathInDb(fileId);
+        
+        window.location.reload();
+      }
+    });
+  });
+
+  async function deleteSinglePathInDb(id){
+
+    let result = await fetch("/rest/paths/" + id, {
+        method: "PUT",
+    });
+
+
+    console.log(await result.text());
+
+  }
 
   async function getCategoriesFromDb(){
 

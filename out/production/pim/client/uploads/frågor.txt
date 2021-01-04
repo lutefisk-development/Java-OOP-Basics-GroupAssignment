@@ -1,0 +1,77 @@
+- Förklara hur vi raderar ett TodoItem (Vad som händer i de olika stegen från att vi klickar på Delete-knappen till att det tas bort i databasen)
+
+Först definierar jag en variabel som lagrar alla deleteknappar, därefter körs en for loop där jag kontrollerar hur många deleteknappar som finns med hjälp av listans längd, 
+när deleteknappen klickas så registreras vilken position deletknappen har och denna position skickas med i [i], 
+därefter körst funktionen deleteFromDb med inparameter som jag döper till activity som motsvarar vilken todo som skickas med som ett objekt ->
+sen körs en asyncron funktion med objektet från föregående funktion där jag definierar variablen result await fetch där jag skickar upp vad som skall tas bort, med metoden DELETE ->
+och skickar bodyn som ett JSON objekt som görs om till text till main java classen. 
+
+Där körs xpress metoden delete där jag tar emot den activitet jag skickat från front end i req.getbody som tar emot objektet som string
+här definierar vi objektet som en activity, och för att jag ska kunna göra detta måste jag parsa objektet jag tar emot till en activity
+när jag parsat activitien som jag får i JSON(kommunicarar mellan back och front end(java <-> js) till klassen activity och skickar med den till databaskopplingen med id som tillhör activiteten.
+
+Därefter körs metoden i db med en inparameter för id som jag valt ska vara den inparameter jag vill ta emot.
+jag skapar ett statement med en query där id är ett ?. och sedan ger jag frågetecknet ett id genom (1) som syftar till första ? med inparametern id som vi får från main metoden.
+och därefter executas updaten som kör queryn.
+
+sedan tas även taggen bort för den aktivitet som tas bort, med this, vilket referarar till deleteknappen, parent som refererar till list taggen(förälder till deleteknappen)
+
+denna deleteactivity ligger även med i displaylist för att den ska kunna köras när deleteknappen clickas.
+
+när jag klickar så skickar jag med vilken position deleteknappen befinner sig i listan av activities och därefter tar jag ut vilken activitet som motsvarar positionen där deleteknappen befinner sig.
+
+
+
+
+
+
+- Förklara hur det går till när vi skapar ett nytt TodoItem.
+
+definierar en variabel för text input som fångar texten från userinput fältet med val().
+
+därefter körs en if sats som kontrollerar att fältet innehåller något.
+
+då får objektet en titel och default får den även att den inte är markerad med checked.
+
+därefter körs addToDb där objektet skickas och metoden post används för att skicka med objektet som ett JSON objekt till main classen.
+
+i main classen görs objektet om till en activity class och  skickas till db.createactivity
+
+där skickas texten in via queryn som körs och inforamtionen lagras i db.
+
+i js körs även get activities
+
+
+
+
+
+
+
+- Förklara strukturen vi använder oss utav, frontend-backend-databas.
+
+
+
+
+
+
+
+
+
+
+
+
+- Om vi skulle vilja uppdatera ett visst TodoItem, hur skulle vi göra då?
+
+Först defineras allItems som en variabel för all listitem i listan(som är utskrivna)i varje "li" ligger en todocontent med en viss position, 
+loop som kontrollerar positionerna för respektive listitems, när jag klickar på ett item plockar jag ut var det specifika itemet befinner sig med hjälp av loopen.
+när jag har klickat så körs en if sats som om itemet är checked uncheckar det och vise versa. toggle class checked lägger bara till en styling i css som ger activiteten en ny stil.
+
+sedan skickar jag med activitien till updateDb där jag tar ut, id, aktivitet, och om objektet har status checked eller inte checked.
+detta skickas i sin tur med till main classen i java med metoden PUT för att updatera som ett JSON objekt med ovannämda värde.
+
+i xpress.put tar jag emot aktiviteten i req.getbody som en aktivitet som sedan körs med metoden changeChecked där prep.stm med 2 frågetecken för id som är en boolean, 
+där 1 är checked och 0 är inte checked. med title som definierar vilken titel vi ska checka eller unchecka.
+
+
+
+
