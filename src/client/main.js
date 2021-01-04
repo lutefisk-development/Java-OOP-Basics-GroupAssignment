@@ -687,7 +687,7 @@
         if(files[i].path.split("/")[2] == undefined) {
 
           $(".section-files").append(
-            '<div1 class="file-container" id="file-'+ files[i].id +'">' +
+            '<div class="file-container" id="file-'+ files[i].id +'">' +
             '<i id="confirmDeleteSingleFile" class="far fa-trash-alt fa-1x"></i>' +
             '<i class="far fa-file-alt fa-3x"></i>' +
             '<a href="'+ files[i].path +'">'+ files[i].path.split("\\")[2] +'</a>' +
@@ -696,7 +696,7 @@
           } else {
 
             $(".section-files").append(
-              '<div1 class="file-container" id="file-'+ files[i].id +'">'+
+              '<div class="file-container" id="file-'+ files[i].id +'">'+
               '<i id="confirmDeleteSingleFile" class="far fa-trash-alt fa-1x"></i>' +
                 '<i class="far fa-file-alt fa-3x"></i>' +
                 '<a href="'+ files[i].path +'">'+ files[i].path.split("/")[2] +'</a>' +
