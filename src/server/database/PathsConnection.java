@@ -81,6 +81,21 @@ public class PathsConnection {
 
     }
 
+    public void deleteSinglePath(int id){
+
+        String query = "DELETE FROM paths WHERE Id = ?";
+
+        try {
+            PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setInt(1, id);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
+    }
+
+
     public Path getPathById(int id){
 
         Path path = null;
